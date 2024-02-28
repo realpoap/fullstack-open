@@ -17,18 +17,28 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+  console.log(votes)
 
   const rdmQuote = () => {
     const rdm = Math.floor(Math.random() * anecdotes.length)
-    console.log(rdm)
     setSelected(rdm)
+  }
+
+  const addVote = () => {
+    const newVotes = [...votes]
+    newVotes[selected] += 1
+    console.log(selected, newVotes[selected])
+    setVotes(newVotes)
   }
 
   return (
     <div>
       <div>
       {anecdotes[selected]}
+      <p>Votes: {votes[selected]}</p>
       </div>
+      <Button onClick={() => addVote()} text='vote!'/>
       <Button onClick={() => rdmQuote()} text='new quote' />
     </div>
   )
