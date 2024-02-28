@@ -7,7 +7,10 @@ const Button = ({text, onClick}) => <button onClick={onClick}>{text}</button>
 const StatLine = ({text, feedback, unit}) => {
   const convertedFeedback = feedback ? feedback : 0
   return (
-    <p>{text}: {convertedFeedback}{unit}</p>
+    <tr>
+      <td>{text}</td>
+      <td>{convertedFeedback}{unit}</td>
+    </tr>
   )
 }
 
@@ -17,13 +20,17 @@ const Statistic = ({good, bad, neutral, sum, avg, pos}) => {
     return (
       <div>
         <Display text='Statistics'/>
-  
+        <table>
+        <thead></thead>
+        <tbody>
           <StatLine text='good' feedback={good}/>
           <StatLine text='neutral' feedback={neutral}/>
           <StatLine text='bad' feedback={bad}/>
           <StatLine text='total' feedback={sum}/>
           <StatLine text='average' feedback={avg}/>
           <StatLine text='positive' feedback={pos} unit=' %'/>
+        </tbody>
+        </table>
       </div>
     )
   }
@@ -52,9 +59,9 @@ const App = () => {
     <div>
       <div>
         <Display text='Give Feedback'/>
-        <Button text='good' onClick={() => setGood(good+1)}/>
-        <Button text='neutral' onClick={() => setNeutral(neutral+1)}/>
-        <Button text='bad' onClick={() => setBad(bad+1)}/>
+        <Button text='😊' onClick={() => setGood(good+1)}/>
+        <Button text='😐' onClick={() => setNeutral(neutral+1)}/>
+        <Button text='😞' onClick={() => setBad(bad+1)}/>
       </div>
       {/* Oh I don't like that at all, couldn<t we pass everything as props={[a,b,c]} */}
       <Statistic 
