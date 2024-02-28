@@ -11,6 +11,21 @@ const Label = ({text, feedback, unit}) => {
   )
 }
 
+const Statistic = ({good, bad, neutral, sum, avg, pos}) => {
+  console.log(good)
+  return (
+    <div>
+      <Display text='Statistics'/>
+        <Label text='good' feedback={good}/>
+        <Label text='neutral' feedback={neutral}/>
+        <Label text='bad' feedback={bad}/>
+        <Label text='total' feedback={sum}/>
+        <Label text='average' feedback={avg}/>
+        <Label text='positive' feedback={pos} unit=' %'/>
+    </div>
+  )
+}
+
 
 const App = () => {
   // save clicks of each button to its own state
@@ -32,15 +47,15 @@ const App = () => {
         <Button text='neutral' onClick={() => setNeutral(neutral+1)}/>
         <Button text='bad' onClick={() => setBad(bad+1)}/>
       </div>
-      <div>
-        <Display text='Statistics'/>
-        <Label text='good' feedback={good}/>
-        <Label text='neutral' feedback={neutral}/>
-        <Label text='bad' feedback={bad}/>
-        <Label text='total' feedback={sum}/>
-        <Label text='average' feedback={avg}/>
-        <Label text='positive' feedback={pos} unit=' %'/>
-      </div>
+      {/* Oh I don't like that at all, couldn<t we pass everything as props={[a,b,c]} */}
+      <Statistic 
+        good={good}
+        bad={bad}
+        neutral={neutral}
+        sum={sum}
+        avg={avg}
+        pos={pos}  
+      />
     </div>
   )
 }
