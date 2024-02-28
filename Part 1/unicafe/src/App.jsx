@@ -4,7 +4,7 @@ const Display = ({text}) => <h1>{text}</h1>
 
 const Button = ({text, onClick}) => <button onClick={onClick}>{text}</button>
 
-const Label = ({text, feedback, unit}) => {
+const StatLine = ({text, feedback, unit}) => {
   const convertedFeedback = feedback ? feedback : 0
   return (
     <p>{text}: {convertedFeedback}{unit}</p>
@@ -18,12 +18,12 @@ const Statistic = ({good, bad, neutral, sum, avg, pos}) => {
       <div>
         <Display text='Statistics'/>
   
-          <Label text='good' feedback={good}/>
-          <Label text='neutral' feedback={neutral}/>
-          <Label text='bad' feedback={bad}/>
-          <Label text='total' feedback={sum}/>
-          <Label text='average' feedback={avg}/>
-          <Label text='positive' feedback={pos} unit=' %'/>
+          <StatLine text='good' feedback={good}/>
+          <StatLine text='neutral' feedback={neutral}/>
+          <StatLine text='bad' feedback={bad}/>
+          <StatLine text='total' feedback={sum}/>
+          <StatLine text='average' feedback={avg}/>
+          <StatLine text='positive' feedback={pos} unit=' %'/>
       </div>
     )
   }
