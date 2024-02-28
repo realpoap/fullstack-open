@@ -13,15 +13,24 @@ const Label = ({text, feedback, unit}) => {
 
 const Statistic = ({good, bad, neutral, sum, avg, pos}) => {
   console.log(good)
+  if (sum>0) {
+    return (
+      <div>
+        <Display text='Statistics'/>
+  
+          <Label text='good' feedback={good}/>
+          <Label text='neutral' feedback={neutral}/>
+          <Label text='bad' feedback={bad}/>
+          <Label text='total' feedback={sum}/>
+          <Label text='average' feedback={avg}/>
+          <Label text='positive' feedback={pos} unit=' %'/>
+      </div>
+    )
+  }
   return (
     <div>
       <Display text='Statistics'/>
-        <Label text='good' feedback={good}/>
-        <Label text='neutral' feedback={neutral}/>
-        <Label text='bad' feedback={bad}/>
-        <Label text='total' feedback={sum}/>
-        <Label text='average' feedback={avg}/>
-        <Label text='positive' feedback={pos} unit=' %'/>
+      <p>No feedback given</p>
     </div>
   )
 }
