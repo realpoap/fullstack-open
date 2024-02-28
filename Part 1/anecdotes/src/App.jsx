@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
 
+const Display = ({text}) => <h1>{text}</h1>
 
 
 const App = () => {
@@ -18,7 +19,13 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+  
+  const highestVote = Math.max(...votes)
+  const mostVoted = votes.indexOf(highestVote)
   console.log(votes)
+  console.log('highest vote', highestVote)
+  console.log('most voted', mostVoted)
+
 
   const rdmQuote = () => {
     const rdm = Math.floor(Math.random() * anecdotes.length)
@@ -28,18 +35,29 @@ const App = () => {
   const addVote = () => {
     const newVotes = [...votes]
     newVotes[selected] += 1
-    console.log(selected, newVotes[selected])
+    //console.log(selected, newVotes[selected])
     setVotes(newVotes)
   }
 
+
   return (
     <div>
+    <div>
+      <Display text='Anecdote of the day'/>
       <div>
       {anecdotes[selected]}
-      <p>Votes: {votes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
       </div>
-      <Button onClick={() => addVote()} text='vote!'/>
+      <div>
+      <Button onClick={() => addVote()} text='👍'/>
       <Button onClick={() => rdmQuote()} text='new quote' />
+      </div>
+    </div>
+    <div>
+      <Display text='Most voted'/>
+      <p>{anecdotes[mostVoted]}</p>
+      <p>with {votes[mostVoted]} votes</p>
+    </div>
     </div>
   )
 }
