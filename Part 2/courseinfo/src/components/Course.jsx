@@ -4,14 +4,13 @@ const Header = ({ name }) => <h1>{name}</h1>
   const Part = ({ title, number }) => <li>{title}, ({number} exercices)</li>
   
   const Content = ({ parts }) => {
-    console.log('parts', parts)
     return (
       <ul>
         {
         // right, I already had a .map there, but not pretty
           parts.map((part) => 
             <Part 
-                key={parts.i} 
+                key={part.id} 
                 title={part.name} 
                 number={part.exercises}
             />
@@ -22,19 +21,22 @@ const Header = ({ name }) => <h1>{name}</h1>
   }
   
   
-//   const Total = (props) => {
-//     const parts= props.parts
-//     let sum = 0
-//     parts.forEach(e => {
-//       sum += e.exercises
-//     })
+  const Total = ({parts}) => {
+    let total = parts.reduce((sum, part) => {
+        console.log('sum', sum, 'part', part)
+        return sum + part.exercises
+    , 0})
+    // let sum = 0
+    // parts.forEach(e => {
+    //   sum += e.exercises
+    // })
   
-//     return (
-//       <div>
-//         <p>Total of exercices: {sum}</p>
-//       </div>
-//     )
-//   }
+    return (
+      <div>
+        <p>Total of exercices: {total}</p>
+      </div>
+    )
+  }
 
 const Course = ({course}) => {
     console.log(course);
@@ -43,6 +45,7 @@ const Course = ({course}) => {
         <div>
             <Header key={course.id} name={course.name}/>
             <Content parts={course.parts}/>
+            <Total parts={course.parts}/>
         </div>
     )
 }
