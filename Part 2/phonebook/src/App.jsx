@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Contacts from './components/Contacts'
+import Form from './components/Form'
+import Search from './components/Search'
 
 
 const App = () => {
@@ -38,35 +40,21 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        <h2>Search</h2>
-        Search: 
-        <input
-          value={searchName}
-          onChange={handleSearchChange}
-        />
-      </div>
+      <h2>Search</h2>
+      <Search 
+        searchName={searchName}
+        handleSearchChange={handleSearchChange}
+      />
 
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: 
-          <input 
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          number: 
-          <input 
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit" >add</button>
-        </div>
-      </form>
+      <Form 
+        // Is there no better way for this ?
+        addPerson={addPerson} 
+        newNumber={newNumber}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+      />
 
       <h2>Numbers</h2>
       <Contacts search={searchName} persons={persons}/>
