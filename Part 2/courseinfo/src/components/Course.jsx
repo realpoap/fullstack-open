@@ -38,11 +38,11 @@ const Header = ({ name }) => <h1>{name}</h1>
 const Course = ({course}) => {
     return (
         // could do a .map for each course...
-        <div>
+        <li>
             <Header key={course.id} name={course.name}/>
             <Content parts={course.parts}/>
             <Total parts={course.parts}/>
-        </div>
+        </li>
     )
 }
 
