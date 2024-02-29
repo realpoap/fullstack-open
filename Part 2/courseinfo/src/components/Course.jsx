@@ -22,10 +22,7 @@ const Header = ({ name }) => <h1>{name}</h1>
   
   
   const Total = ({parts}) => {
-    let total = parts.reduce((sum, part) => {
-        console.log('sum', sum, 'part', part)
-        return sum + part.exercises
-    , 0})
+    let total = parts.reduce(function(sum, part) { return sum + part.exercises} , 0)
     // let sum = 0
     // parts.forEach(e => {
     //   sum += e.exercises
@@ -39,7 +36,6 @@ const Header = ({ name }) => <h1>{name}</h1>
   }
 
 const Course = ({course}) => {
-    console.log(course);
     return (
         // could do a .map for each course...
         <div>
