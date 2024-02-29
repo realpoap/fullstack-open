@@ -19,13 +19,19 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault()
     console.log(e.target);
-    const nameObject = {
-      name: newName,
+    if (persons.find((person) => person.name === newName) ) {
+      alert(`${newName} already exists`)
     }
-    setPersons(persons.concat(nameObject))
-    setNewName('')
-
+    else {
+      const nameObject = {
+        name: newName,
+      }
+      // chose to keep the reset outside so we can make changes to the newName in case of typo
+      setPersons(persons.concat(nameObject))
+      setNewName('')
+    }
   }
+  
 
   return (
     <div>
