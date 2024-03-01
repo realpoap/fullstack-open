@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import personService from './services/person'
 
 import Contacts from './components/Contacts'
 import Form from './components/Form'
@@ -13,10 +14,10 @@ const App = () => {
   const [newNumber, setNewNumber]  = useState('(1)')
 
 useEffect(() => {
-  axios
-    .get('http://localhost:3001/persons')
-    .then(res => {
-      setPersons(res.data)
+  personService
+    .getAll()
+    .then((initialPersons)=> {
+      setPersons(initialPersons)
     })
 }, [])
 
@@ -36,7 +37,12 @@ useEffect(() => {
         number: newNumber,
       }
       // chose to keep the reset outside so we can make changes to the newName in case of typo
-      setPersons(persons.concat(nameObject))
+      personService
+        .create(nameObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+        })      
+      
       setNewName('')
       setNewNumber('')
     }
