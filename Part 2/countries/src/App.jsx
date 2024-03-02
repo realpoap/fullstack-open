@@ -20,7 +20,8 @@ function App() {
       .then((returnedCountries) => {
         setCountries(returnedCountries)
       })
-  },)
+      .catch(err => console.log('error', err))
+  },[search])
   
   if (!countries) {
     return <div><p>Fetching data...</p></div>
@@ -34,17 +35,19 @@ function App() {
     const searchLow = search.toLowerCase()
     const list = countries.filter(c => c.name.common.toLowerCase().includes(searchLow))
 
-
-
+    let count = 0;
+    count++;
+    console.log("component render number: ", count)
   
   return (
+
     <div>
       <h1>Country Info</h1>
       <Search 
         search={search} 
         handleChange={handleSearchChange} 
       />
-      <Results search={search} countries={list}/> 
+      <Results countries={list}/> 
     </div>
   )
 }

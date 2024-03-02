@@ -1,7 +1,8 @@
-const Country = ({country}) => {
-    
+import Language from "./Language"
+
+const Country = ({country, languages}) => {
+
     return (
-        
         <>
             <div>
                 <h2>{country.name.common}</h2>
@@ -10,6 +11,9 @@ const Country = ({country}) => {
             </div>
             <div>
                 <h3>Languages spoken</h3>
+                <ul>
+                    {languages.map(l => <Language key={`&{country.ccn3}${l}`} language={l}/>)}
+                </ul>
             </div>
         </>
     )

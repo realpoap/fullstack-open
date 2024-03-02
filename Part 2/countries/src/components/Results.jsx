@@ -1,4 +1,7 @@
+import Country from "./Country"
+
 const Results = ({search, countries}) => {
+
     if (search === '') {
         return null
     }
@@ -13,7 +16,11 @@ const Results = ({search, countries}) => {
         )
     }
     if (countries.length === 1) {
-        return <p>implement country detail</p>
+        const countryResult = countries[0]
+        const countryLanguages = Object.values(countryResult.languages)
+        console.log(countryLanguages)
+        // it keeps spawning the languages, why ?
+        return <Country country={countryResult} languages={countryLanguages}/>
     }
 }
 
