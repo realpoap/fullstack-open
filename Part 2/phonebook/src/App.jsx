@@ -5,6 +5,7 @@ import personService from './services/person'
 import Contacts from './components/Contacts'
 import Form from './components/Form'
 import Search from './components/Search'
+import Message from './components/Message'
 
 
 const App = () => {
@@ -12,6 +13,8 @@ const App = () => {
   const [newName, setNewName] = useState('John Doe')
   const [searchName, setSearchName] = useState('')
   const [newNumber, setNewNumber]  = useState('(1)')
+  const [message, setMessage]  = useState(null)
+  const [messageType, setMessageType]  = useState('')
 
 useEffect(() => {
   personService
@@ -37,7 +40,8 @@ useEffect(() => {
   const addPerson = (e) => {
     e.preventDefault()
     if (newName === '') {
-      alert(`You didn't enter a name`)
+      setMessage(`You didn't enter a name`)
+      setMessageType('error')
     }
     else {
       const matchingObject = persons.find((p) => p.name === newName)
@@ -47,9 +51,18 @@ useEffect(() => {
         if (confirm(`replace ${newName} number with ${newNumber}?`)) {
           personService
             .update(matchingObject.id, updatedObject)
-            .then(() => resetPersons())
+            .then(() => {
+              resetPersons()
+              setMessageType('success')
+              setMessage(`${newName} was successfully updated`)
+              setTimeout(() => { 
+              setMessage(null)
+            }, 3000)
+            })
             .catch(err => {
-              alert(`the person of id ${matchingObject.id} doesn't exists`)
+              setMessage(`the person of id ${matchingObject.id} doesn't exists`)
+              setMessageType('error')
+              console.log('error:', err)
             })
         }
       } else {
@@ -62,6 +75,12 @@ useEffect(() => {
           .create(newObject)
           .then((returnedPerson) => {
             setPersons(persons.concat(returnedPerson))
+            setMessageType('success')
+            setMessage(`${newObject.name} was successfully added`)
+            setTimeout(() => { 
+              setMessage(null)
+            }, 3000)
+            
           })      
         
         setNewName('')  
@@ -74,6 +93,10 @@ useEffect(() => {
 
   return (
     <div>
+      <Message 
+        message={message} 
+        messageType={messageType}
+      />
       <h2>Search</h2>
       <Search 
         searchName={searchName}
