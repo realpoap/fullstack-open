@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import Results from './components/Results'
+import Country from './components/Country'
 import Search from './components/Search'
 
 import countryService from './services/country'
@@ -12,13 +13,14 @@ function App() {
   const [countries, setCountries] = useState(null)
   const [search, setSearch] = useState('')
 
+
   useEffect(() => {
     countryService
       .getAll()
       .then((returnedCountries) => {
         setCountries(returnedCountries)
       })
-  },[search])
+  },)
   
   if (!countries) {
     return <div><p>Fetching data...</p></div>
@@ -42,7 +44,7 @@ function App() {
         search={search} 
         handleChange={handleSearchChange} 
       />
-      <Results search={search} countries={list}/>    
+      <Results search={search} countries={list}/> 
     </div>
   )
 }

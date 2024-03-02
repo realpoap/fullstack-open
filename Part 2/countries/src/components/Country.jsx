@@ -4,7 +4,7 @@ const Country = ({country}) => {
         
         <>
             <div>
-                <h2>{country.common.name}</h2>
+                <h2>{country.name.common}</h2>
                 <p>Capital : {country.capital[0]}</p>
                 <p>Area: {country.area}</p>
             </div>
