@@ -21,30 +21,52 @@ useEffect(() => {
     })
 }, [])
 
+  const resetPersons = () => {
+    personService
+    .getAll()
+    .then((initialPersons)=> {
+      setPersons(initialPersons)
+    })
+  }
+
+
   const handleNameChange = (e) => setNewName(e.target.value)
   const handleNumberChange = (e) => setNewNumber(e.target.value)
   const handleSearchChange = (e) => setSearchName(e.target.value)
 
   const addPerson = (e) => {
     e.preventDefault()
-    //console.log(e.target);
-    if (newName === '' || persons.find((person) => person.name === newName) ) {
-      alert(`${newName} is invalid `)
+    if (newName === '') {
+      alert(`You didn't enter a name`)
     }
     else {
-      const nameObject = {
-        name: newName,
-        number: newNumber,
-      }
-      // chose to keep the reset outside so we can make changes to the newName in case of typo
-      personService
-        .create(nameObject)
-        .then((returnedPerson) => {
-          setPersons(persons.concat(returnedPerson))
-        })      
-      
-      setNewName('')  
-      setNewNumber('')
+      const matchingObject = persons.find((p) => p.name === newName)
+      const updatedObject = { ...matchingObject, number: newNumber}
+
+      if (matchingObject) {
+        if (confirm(`replace ${newName} number with ${newNumber}?`)) {
+          personService
+            .update(matchingObject.id, updatedObject)
+            .then(() => resetPersons())
+            .catch(err => {
+              alert(`the person of id ${matchingObject.id} doesn't exists`)
+            })
+        }
+      } else {
+        const newObject = {
+          name: newName,
+          number: newNumber,
+        }
+        // chose to keep the reset outside so we can make changes to the newName in case of typo
+        personService
+          .create(newObject)
+          .then((returnedPerson) => {
+            setPersons(persons.concat(returnedPerson))
+          })      
+        
+        setNewName('')  
+        setNewNumber('')
+      }  
     }
   }
 
