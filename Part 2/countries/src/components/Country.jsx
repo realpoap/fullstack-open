@@ -15,6 +15,7 @@ const Country = ({country, languages}) => {
                     {languages.map(l => <Language key={`&{country.ccn3}${l}`} language={l}/>)}
                 </ul>
             </div>
+            <img src={country.flags.png} alt={country.flags.alt}></img>
         </>
     )
 }

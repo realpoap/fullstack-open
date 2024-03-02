@@ -18,8 +18,6 @@ const Results = ({search, countries}) => {
     if (countries.length === 1) {
         const countryResult = countries[0]
         const countryLanguages = Object.values(countryResult.languages)
-        console.log(countryLanguages)
-        // it keeps spawning the languages, why ?
         return <Country country={countryResult} languages={countryLanguages}/>
     }
 }

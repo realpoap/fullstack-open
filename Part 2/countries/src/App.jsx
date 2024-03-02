@@ -28,10 +28,9 @@ function App() {
   }
 
   const handleSearchChange = (e) => {
-    console.log(e.target.value);
     setSearch(e.target.value)
   }
-
+  
     const searchLow = search.toLowerCase()
     const list = countries.filter(c => c.name.common.toLowerCase().includes(searchLow))
 
