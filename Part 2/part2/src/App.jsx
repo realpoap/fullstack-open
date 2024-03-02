@@ -6,7 +6,7 @@ import Note from "./components/Note"
 import Footer from "./components/Footer"
 
 const App = () => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(null)
   const [newNote, setNewNote ] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -21,6 +21,10 @@ const App = () => {
       })
   }, [])
   console.log('render', notes.length, 'notes');
+
+  if (!notes) {
+    return null
+  }
 
 
   const addNote = (e) => {
@@ -77,6 +81,7 @@ const App = () => {
     notes : notes.filter(note => note.important)
 
   return (
+
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage}/>
