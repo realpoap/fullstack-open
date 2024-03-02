@@ -27,7 +27,7 @@ useEffect(() => {
 
   const addPerson = (e) => {
     e.preventDefault()
-    console.log(e.target);
+    //console.log(e.target);
     if (newName === '' || persons.find((person) => person.name === newName) ) {
       alert(`${newName} is invalid `)
     }
@@ -43,11 +43,12 @@ useEffect(() => {
           setPersons(persons.concat(returnedPerson))
         })      
       
-      setNewName('')
+      setNewName('')  
       setNewNumber('')
     }
   }
-  
+
+ 
 
   return (
     <div>
@@ -68,7 +69,11 @@ useEffect(() => {
       />
 
       <h2>Numbers</h2>
-      <Contacts search={searchName} persons={persons}/>
+      <Contacts 
+        search={searchName} 
+        persons={persons} 
+        setPersons={setPersons}
+      />
     </div>
   )
 }

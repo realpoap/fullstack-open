@@ -27,6 +27,7 @@ const App = () => {
         exercises: 11,
         id: 4
       },
+      
     ]
   },
   {
