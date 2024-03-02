@@ -49,21 +49,23 @@ useEffect(() => {
 
       if (matchingObject) {
         if (confirm(`replace ${newName} number with ${newNumber}?`)) {
-          personService
-            .update(matchingObject.id, updatedObject)
-            .then(() => {
-              resetPersons()
-              setMessageType('success')
-              setMessage(`${newName} was successfully updated`)
-              setTimeout(() => { 
-              setMessage(null)
-            }, 3000)
-            })
-            .catch(err => {
-              setMessage(`the person of id ${matchingObject.id} doesn't exists`)
-              setMessageType('error')
-              console.log('error:', err)
-            })
+          setTimeout(() => {
+            personService
+              .update(matchingObject.id, updatedObject)
+              .then(() => {
+                resetPersons()
+                setMessageType('success')
+                setMessage(`${newName} was successfully updated`)
+                setTimeout(() => { 
+                setMessage(null)
+              }, 3000)
+              })
+              .catch(err => {
+                setMessage(`${matchingObject.name} was removed from the server`)
+                setMessageType('error')
+              })
+
+          },5000)
         }
       } else {
         const newObject = {
