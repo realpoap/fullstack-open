@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Results from './components/Results'
 import Country from './components/Country'
 import Search from './components/Search'
+import Weather from './components/Weather'
 
 import countryService from './services/country'
 
@@ -13,6 +14,7 @@ function App() {
   const [countries, setCountries] = useState(null)
   const [filter, setFilter] = useState('')
   const [selectedCountry, setSelectedCountry] = useState(null)
+  const [weather, setWeather] = useState(null)
 
 
   useEffect(() => {
@@ -41,6 +43,7 @@ function App() {
     setSelectedCountry(country)
   }
 
+
   return (
 
     <div>
@@ -54,9 +57,15 @@ function App() {
           filter={filter} 
           filteredCountries={countries.filter((country) => country.name.common.toLowerCase().includes(filter.toLowerCase()))} 
           handleSelectedCountry={handleSelectedCountry} 
-          selectedCountry={selectedCountry}/>)}
+          selectedCountry={selectedCountry}
+          weather={weather} 
+          setWeather={setWeather}
+        />)}
       {selectedCountry && (
+              <>
                 <Country country={selectedCountry} languages={Object.values(selectedCountry.languages)}/>
+                <Weather country={selectedCountry} weather={weather} setWeather={setWeather}/>
+                </>
             )}
     </div>
   )

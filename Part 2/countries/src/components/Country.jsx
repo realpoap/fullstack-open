@@ -1,5 +1,6 @@
 import Language from "./Language"
 
+
 const Country = ({country, languages}) => {
 
     return (
@@ -16,6 +17,7 @@ const Country = ({country, languages}) => {
                 </ul>
             </div>
             <img src={country.flags.png} alt={country.flags.alt}></img>
+            
         </>
     )
 }

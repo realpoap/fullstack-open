@@ -1,7 +1,8 @@
 import Country from "./Country"
+import Weather from "./Weather"
 
 
-const Results = ({filter, filteredCountries, handleSelectedCountry}) => {
+const Results = ({filter, filteredCountries, handleSelectedCountry, weather, setWeather}) => {
  
     if (!filter) {
         return null
@@ -27,8 +28,13 @@ const Results = ({filter, filteredCountries, handleSelectedCountry}) => {
         )    
     }
     if (filteredCountries.length === 1) {
+        const countryToShow = filteredCountries[0] 
+        console.log('country to show:',countryToShow)
         return (
-            <Country country={filteredCountries[0]} languages={Object.values(filteredCountries[0].languages)}/>
+            <>
+            <Country country={countryToShow} languages={Object.values(countryToShow.languages)}/>
+            <Weather country={countryToShow} weather={weather} setWeather={setWeather}/>
+            </>
         )
     }
 
