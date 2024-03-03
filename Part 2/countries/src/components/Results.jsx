@@ -8,7 +8,7 @@ const Results = ({filter, filteredCountries, handleSelectedCountry, weather, set
         return null
     }
     if (filteredCountries.length > 10) {
-        return <p>Too many matches, please specify another filter</p>
+        return <p className="alert">Too many matches, please specify another filter</p>
     }
     
     if (filteredCountries.length <10 && filteredCountries.length > 1) {
@@ -17,11 +17,11 @@ const Results = ({filter, filteredCountries, handleSelectedCountry, weather, set
             filteredCountries
                 .map((country) => {
                     return (
-                            <div key={country.ccn3}>
+                            <div key={country.ccn3} className="countryItem">
                                 <p>{country.name.common}</p>
                                 <button 
                                     onClick={() => handleSelectedCountry(country)}
-                                >Show</button>
+                                >Show 🔎</button>
                             </div>
                             )
                     })
