@@ -11,7 +11,8 @@ import countryService from './services/country'
 function App() {
 
   const [countries, setCountries] = useState(null)
-  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
 
   useEffect(() => {
@@ -21,32 +22,42 @@ function App() {
         setCountries(returnedCountries)
       })
       .catch(err => console.log('error', err))
-  },[search])
+  },[])
   
   if (!countries) {
     return <div><p>Fetching data...</p></div>
   }
 
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value)
-  }
-  
-    const searchLow = search.toLowerCase()
-    const list = countries.filter(c => c.name.common.toLowerCase().includes(searchLow))
 
-    let count = 0;
-    count++;
-    console.log("component render number: ", count)
-  
+  console.log(filter);
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value)
+    setSelectedCountry('')
+  }
+
+  const handleSelectedCountry = (country) => {
+    console.log('in handleSelectedCountry');
+    setSelectedCountry(country)
+  }
+
   return (
 
     <div>
       <h1>Country Info</h1>
       <Search 
-        search={search} 
-        handleChange={handleSearchChange} 
+        filter={filter} 
+        handleFilterChange={handleFilterChange}
       />
-      <Results countries={list}/> 
+      {!selectedCountry && (
+        <Results
+          filter={filter} 
+          filteredCountries={countries.filter((country) => country.name.common.toLowerCase().includes(filter.toLowerCase()))} 
+          handleSelectedCountry={handleSelectedCountry} 
+          selectedCountry={selectedCountry}/>)}
+      {selectedCountry && (
+                <Country country={selectedCountry} languages={Object.values(selectedCountry.languages)}/>
+            )}
     </div>
   )
 }

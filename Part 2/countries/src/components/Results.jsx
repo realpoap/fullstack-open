@@ -1,25 +1,38 @@
 import Country from "./Country"
 
-const Results = ({search, countries}) => {
 
-    if (search === '') {
+const Results = ({filter, filteredCountries, handleSelectedCountry}) => {
+ 
+    if (!filter) {
         return null
     }
-    if (countries.length > 10) {
+    if (filteredCountries.length > 10) {
         return <p>Too many matches, please specify another filter</p>
     }
     
-    if (countries.length !== 1 && countries.length <10) {
+    if (filteredCountries.length <10 && filteredCountries.length > 1) {
+        
         return (
-            countries.map((country) => <p key={country.ccn3}>{country.name.common}</p>
-            )
+            filteredCountries
+                .map((country) => {
+                    return (
+                            <div key={country.ccn3}>
+                                <p>{country.name.common}</p>
+                                <button 
+                                    onClick={() => handleSelectedCountry(country)}
+                                >Show</button>
+                            </div>
+                            )
+                    })
+        )    
+    }
+    if (filteredCountries.length === 1) {
+        return (
+            <Country country={filteredCountries[0]} languages={Object.values(filteredCountries[0].languages)}/>
         )
     }
-    if (countries.length === 1) {
-        const countryResult = countries[0]
-        const countryLanguages = Object.values(countryResult.languages)
-        return <Country country={countryResult} languages={countryLanguages}/>
-    }
+
+    
 }
 
 export default Results

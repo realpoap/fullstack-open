@@ -1,8 +1,8 @@
-const Search = ({search, handleChange, handleClick}) => {
+const Search = ({filter, handleFilterChange}) => {
     return (
         <div>
             <p>Find a country :</p>
-            <input value={search} onChange={handleChange}></input>
+            <input value={filter} onChange={handleFilterChange}></input>
         </div>
     )
 
