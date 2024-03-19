@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import axios from 'axios'
+import axios from "axios"
 
 import noteService from "./services/notes"
 import Note from "./components/Note"
@@ -7,20 +7,19 @@ import Footer from "./components/Footer"
 
 const App = () => {
   const [notes, setNotes] = useState(null)
-  const [newNote, setNewNote ] = useState('')
+  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
-  
+
   //server import
   useEffect(() => {
-    
     noteService
       .getAll()
       .then(initialNotes => {
+        console.log(initialNotes)
         setNotes(initialNotes)
       })
   }, [])
-  console.log('render', notes.length, 'notes');
 
   if (!notes) {
     return null
@@ -49,7 +48,7 @@ const App = () => {
   const toggleImportanceOf = (id) => {
     //toggles property important in said note
     const foundNote = notes.find(n => n.id === id)
-    const changedNote = {...foundNote, important: !foundNote.important}
+    const changedNote = { ...foundNote, important: !foundNote.important }
 
     noteService
       .update(id, changedNote)
@@ -66,44 +65,44 @@ const App = () => {
       })
   }
 
-  const Notification = ({message}) => {
+  const Notification = ({ message }) => {
     if (message === null) {
       return null
     }
-    return  (
+    return (
       <div className='error'>
         {message}
       </div>
     )
   }
 
-  const notesToShow = showAll ? 
+  const notesToShow = showAll ?
     notes : notes.filter(note => note.important)
 
   return (
 
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage}/>
+      <Notification message={errorMessage} />
       <div>
-      <button onClick={() => setShowAll(!showAll)}>
-        Show {showAll ? 'important' : 'all'}
-      </button>
+        <button onClick={() => setShowAll(!showAll)}>
+          Show {showAll ? 'important' : 'all'}
+        </button>
       </div>
-      <ul>        
-        {notesToShow.map(note => 
-          <Note 
-            key={note.id} 
-            note={note} 
+      <ul>
+        {notesToShow.map(note =>
+          <Note
+            key={note.id}
+            note={note}
             toggleImportance={() => toggleImportanceOf(note.id)}
           />
-        )}      
+        )}
       </ul>
       <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange}/>
+        <input value={newNote} onChange={handleNoteChange} />
         <button type='submit'>Save</button>
       </form>
-      <Footer/>
+      <Footer />
     </div>
   )
 }
