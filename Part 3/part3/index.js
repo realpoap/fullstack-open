@@ -15,12 +15,49 @@ const generateId = () => {
   : 0
 }
 
+// MONGOOSE DEFINITION
+const mongoose = require('mongoose')
+
+if (process.argv.length<3) {
+  console.log('give password as argument')
+  process.exit(1)
+}
+
+const password = process.argv[2]
+
+const url =
+  `mongodb+srv://poap:${password}@cluster-fullstack-open.ebaoy2d.mongodb.net/NoteApp?retryWrites=true&w=majority`
+
+mongoose.set('strictQuery',false)
+
+mongoose.connect(url)
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+noteSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+const Note = mongoose.model('Note', noteSchema)
+
+// ROUTES
+
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/notes/', (request, response) => {
-  response.json(notes)
+  Note.find({})
+      .then(notes => {
+        response.json(notes)
+      })
 })
 
 app.get('/api/notes/:id', (request, response) => {
