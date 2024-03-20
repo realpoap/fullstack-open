@@ -9,27 +9,27 @@ import Message from './components/Message'
 
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('John Doe')
   const [searchName, setSearchName] = useState('')
-  const [newNumber, setNewNumber]  = useState('(1)')
-  const [message, setMessage]  = useState(null)
-  const [messageType, setMessageType]  = useState('')
+  const [newNumber, setNewNumber] = useState('(1)')
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('')
 
-useEffect(() => {
-  personService
-    .getAll()
-    .then((initialPersons)=> {
-      setPersons(initialPersons)
-    })
-}, [])
+  useEffect(() => {
+    personService
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons)
+      })
+  }, [])
 
   const resetPersons = () => {
     personService
-    .getAll()
-    .then((initialPersons)=> {
-      setPersons(initialPersons)
-    })
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons)
+      })
   }
 
 
@@ -45,7 +45,7 @@ useEffect(() => {
     }
     else {
       const matchingObject = persons.find((p) => p.name === newName)
-      const updatedObject = { ...matchingObject, number: newNumber}
+      const updatedObject = { ...matchingObject, number: newNumber }
 
       if (matchingObject) {
         if (confirm(`replace ${newName} number with ${newNumber}?`)) {
@@ -56,16 +56,16 @@ useEffect(() => {
                 resetPersons()
                 setMessageType('success')
                 setMessage(`${newName} was successfully updated`)
-                setTimeout(() => { 
-                setMessage(null)
-              }, 3000)
+                setTimeout(() => {
+                  setMessage(null)
+                }, 3000)
               })
               .catch(err => {
                 setMessage(`${matchingObject.name} was removed from the server`)
-                setMessageType('error')
+                setMessageType('error', err)
               })
 
-          },5000)
+          }, 5000)
         }
       } else {
         const newObject = {
@@ -79,36 +79,36 @@ useEffect(() => {
             setPersons(persons.concat(returnedPerson))
             setMessageType('success')
             setMessage(`${newObject.name} was successfully added`)
-            setTimeout(() => { 
+            setTimeout(() => {
               setMessage(null)
             }, 3000)
-            
-          })      
-        
-        setNewName('')  
+
+          })
+
+        setNewName('')
         setNewNumber('')
-      }  
+      }
     }
   }
 
- 
+
 
   return (
     <div>
-      <Message 
-        message={message} 
+      <Message
+        message={message}
         messageType={messageType}
       />
       <h2>Search</h2>
-      <Search 
+      <Search
         searchName={searchName}
         handleSearchChange={handleSearchChange}
       />
 
       <h2>Phonebook</h2>
-      <Form 
+      <Form
         // Is there no better way for this ?
-        addPerson={addPerson} 
+        addPerson={addPerson}
         newNumber={newNumber}
         newName={newName}
         handleNameChange={handleNameChange}
@@ -116,9 +116,9 @@ useEffect(() => {
       />
 
       <h2>Numbers</h2>
-      <Contacts 
-        search={searchName} 
-        persons={persons} 
+      <Contacts
+        search={searchName}
+        persons={persons}
         setPersons={setPersons}
       />
     </div>
