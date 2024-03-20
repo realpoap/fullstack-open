@@ -10,8 +10,6 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
 
-
-
 // ROUTES
 
 app.get('/', (request, response) => {
