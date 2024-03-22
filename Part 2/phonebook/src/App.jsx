@@ -91,6 +91,22 @@ const App = () => {
     }
   }
 
+  const deletePerson = (person) => {
+    console.log('id:', person.id)
+    const ok = window.confirm(`Are you sure you want to delete ${person.name}?`)
+    // logic from solution, that was in the if before
+    if (ok) {
+      console.log('OK');
+      personService
+        .deleteEntry(person.id)
+        .then(() => {
+          console.log('before reset setPersons');
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+        .catch(err => console.log('error:', err.message))
+    }
+  }
+
 
 
   return (
@@ -120,6 +136,7 @@ const App = () => {
         search={searchName}
         persons={persons}
         setPersons={setPersons}
+        deletePerson={deletePerson}
       />
     </div>
   )
