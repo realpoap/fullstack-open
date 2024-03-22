@@ -49,23 +49,22 @@ const App = () => {
 
       if (matchingObject) {
         if (confirm(`replace ${newName} number with ${newNumber}?`)) {
-          setTimeout(() => {
-            personService
-              .update(matchingObject.id, updatedObject)
-              .then(() => {
-                resetPersons()
-                setMessageType('success')
-                setMessage(`${newName} was successfully updated`)
-                setTimeout(() => {
-                  setMessage(null)
-                }, 3000)
-              })
-              .catch(err => {
-                setMessage(`${matchingObject.name} was removed from the server`)
-                setMessageType('error', err)
-              })
 
-          }, 5000)
+          personService
+            .update(matchingObject.id, updatedObject)
+            .then(() => {
+              resetPersons()
+              setMessageType('success')
+              setMessage(`${newName} was successfully updated`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 3000)
+            })
+            .catch(err => {
+              setMessage(`${matchingObject.name} was removed from the server`)
+              setMessageType('error', err)
+            })
+
         }
       } else {
         const newObject = {
