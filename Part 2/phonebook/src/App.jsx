@@ -61,8 +61,11 @@ const App = () => {
               }, 3000)
             })
             .catch(err => {
-              setMessage(`${matchingObject.name} was removed from the server`)
-              setMessageType('error', err)
+              setMessage(err.response.data.error)
+              setMessageType('error')
+              setTimeout(() => {
+                setMessage(null)
+              }, 3000)
             })
 
         }
@@ -81,7 +84,13 @@ const App = () => {
             setTimeout(() => {
               setMessage(null)
             }, 3000)
-
+          })
+          .catch(err => {
+            setMessage(err.response.data.error)
+            setMessageType('error')
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
           })
 
         setNewName('')
@@ -102,7 +111,13 @@ const App = () => {
           console.log('before reset setPersons');
           setPersons(persons.filter(p => p.id !== person.id))
         })
-        .catch(err => console.log('error:', err.message))
+        .catch(err => {
+          setMessage(err.response.data.error)
+          setMessageType('error')
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000)
+        })
     }
   }
 
