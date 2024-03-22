@@ -15,6 +15,8 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({error: 'malformed id'})
+  } else if (error.name === 'ValidationError'){
+    return response.status(400).json({error: error.message})
   }
   next(error)
 }
@@ -45,14 +47,17 @@ app.get('/api/notes/:id', (request, response, next) => {
   })
 
 app.put('/api/notes/:id', (req, res) => {
-  const body = req.body
-  const note = {
-    content: body.content,
-    important: body.important,
-  }
+  // const body = req.body
+  // const note = {
+  //   content: body.content,
+  //   important: body.important,
+  // }
+  const {content, important} = req.body
 
   //the optional { new: true } parameter, which will cause our event handler to be called with the new modified document instead of the original
-  Note.findByIdAndUpdate(req.params.id, note, {new: true})
+  Note.findByIdAndUpdate(req.params.id, 
+    {content, important}, 
+    {new: true, runValidators: true, context: 'query'})
       .then(updatedNote => {
         res.json(updatedNote)
       })
@@ -65,7 +70,7 @@ app.delete('/api/notes/:id', (request, response, next) => {
         .catch(error => next(error))
   })  
 
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res,next) => {
   const body = req.body
 
   if(!body.content) {
@@ -80,9 +85,8 @@ app.post('/api/notes', (req, res) => {
   })
 
   note.save()
-      .then(savedNote => {
-        res.json(savedNote)
-      })
+      .then(savedNote => res.json(savedNote))
+      .catch(err => next(err))
 
 })
 
