@@ -8,6 +8,9 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 
+app.use(cors())
+app.use(express.json())
+
 const mongoUrl = config.MONGO_URI
 mongoose.set('strictQuery', false)
 
@@ -17,8 +20,7 @@ mongoose.connect(mongoUrl)
     .then (() => logger.info('connected to MongoDB'))
     .catch(err => logger.info('error connecting to MongoDB:', error.message))
 
-app.use(cors())
-app.use(express.json())
+
 
 app.use(middleware.requestLogger)
 
