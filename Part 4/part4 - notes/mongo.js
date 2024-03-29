@@ -1,0 +1,32 @@
+const mongoose = require('mongoose')
+
+const url =
+    'mongodb+srv://poap:wJZfWeYT0sCVJhW1@cluster-fullstack-open.ebaoy2d.mongodb.net/TestNoteApp?retryWrites=true&w=majority'
+
+mongoose.set('strictQuery', false)
+mongoose.connect(url).then(() => {
+  const noteSchema = new mongoose.Schema({
+    content: String,
+    important: Boolean,
+  })
+
+  const Note = mongoose.model('Note', noteSchema)
+
+
+  const note = new Note({
+    content: 'Note for testing',
+    important: true,
+  })
+
+  note.save().then(() => {
+    console.log('note saved!')
+    mongoose.connection.close()
+  })
+
+  Note.find({}).then(result => {
+    result.forEach(note => {
+      console.log(note)
+    })
+    mongoose.connection.close()
+  })
+})

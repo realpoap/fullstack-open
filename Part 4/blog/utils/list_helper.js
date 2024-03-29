@@ -16,7 +16,6 @@ const totalLikes = (blogs) => {
 
 const favoriteBlog = (blogs) => {
     const findHighestLikes = (accumulator, blog) => {
-        console.log(accumulator);
         return Math.max(accumulator, blog.likes)
     }
 
@@ -25,7 +24,6 @@ const favoriteBlog = (blogs) => {
     } else {
         const highestLikes = blogs.reduce(findHighestLikes, 0)
         const goatBlogs = blogs.filter(blog => blog.likes === highestLikes)
-        console.log('goats: ', goatBlogs);
         const favoriteBlog = {
             title: goatBlogs[0].title,
             author: goatBlogs[0].author,
