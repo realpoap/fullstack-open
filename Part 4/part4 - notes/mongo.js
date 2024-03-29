@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
-const url =
-    'mongodb+srv://poap:wJZfWeYT0sCVJhW1@cluster-fullstack-open.ebaoy2d.mongodb.net/TestNoteApp?retryWrites=true&w=majority'
+const url = process.env.TEST_MONGODB_URI
 
 mongoose.set('strictQuery', false)
 mongoose.connect(url).then(() => {
