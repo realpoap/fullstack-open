@@ -6,17 +6,22 @@ const assert = require('node:assert')
 const app = require('../app')
 const helper = require('./test_helper')
 const Note = require('../models/note')
+const { log } = require('node:console')
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await Note.deleteMany({})
-  let noteObject = new Note(helper.initialNotes[0])
-  await noteObject.save()
-  noteObject = new Note(helper.initialNotes[1])
-  await noteObject.save()
+
+  for (let note of helper.initialNotes) {
+    let noteObject = new Note(note)
+    await noteObject.save()
+  }
 })
 
+test('notes are returned as json', async () => {
+  console.log('entered test')
+})
 
 test('notes are returned as json', async () => {
   await api
@@ -86,10 +91,15 @@ test('a note can be deleted', async () => {
   const notesAtStart = await helper.notesInDb()
   const noteToDelete = notesAtStart[0]
 
-  await api.delete(`/api/notes/${noteToDelete.id}`).expect(204)
+  await api
+    .delete(`/api/notes/${noteToDelete.id}`)
+    .expect(204)
+
   const notesAtEnd = await helper.notesInDb()
 
   const contents = notesAtEnd.map(r => r.content)
+  console.log('contents:', contents)
+  console.log(noteToDelete.content)
   assert(!contents.includes(noteToDelete.content))
 
   assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1)
