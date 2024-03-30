@@ -36,9 +36,6 @@ const favoriteBlog = (blogs) => {
 }
 
 const authorByBlogCount = (blogs) => {
-
-
-
     if (blogs.length === 0) {
         return null
     }
@@ -53,9 +50,40 @@ const authorByBlogCount = (blogs) => {
     }
 }
 
+const mostLikes = (blogs) => {
+
+    if (blogs.length === 0) {
+        return null
+    }
+    else {
+        const authors = blogs.map(b => b.author)
+        const authorList = _.union(authors)
+        console.log('authorList', authorList);
+
+        const findAuthorCount = (acc, author) => {
+            console.log('author in reduce', author);
+            const authorBlogs = blogs.filter(b => b.author === author)
+            const authorLikes = _.map(authorBlogs, 'likes')
+            const likes = _.sum(authorLikes)
+            const newAcc = _.concat(acc, { author, likes })
+            console.log('newAcc', newAcc)
+            return newAcc
+        }
+
+        const authorCount = authorList.reduce(findAuthorCount, [])
+
+        const bestAuth = _.maxBy(authorCount, 'likes')
+        console.log('bestAuthor is', bestAuth)
+
+        return bestAuth
+
+    }
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    authorByBlogCount
+    authorByBlogCount,
+    mostLikes
 }
