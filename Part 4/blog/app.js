@@ -12,18 +12,14 @@ const middleware = require('./utils/middleware')
 app.use(cors())
 app.use(express.json())
 
-const mongoUrl = process.env.NODE_ENV === 'test'
-    ? config.TEST_MONGO_URI
-    : config.MONGO_URI
+const mongoUrl = config.MONGO_URI
 mongoose.set('strictQuery', false)
 
 logger.info('connecting to ', config.MONGO_URI)
 
 mongoose.connect(mongoUrl)
-    .then(() => logger.info('connected to MongoDB'))
-    .catch(err => logger.info('error connecting to MongoDB:', error.message))
-
-
+  .then(() => logger.info('connected to MongoDB'))
+  .catch(err => logger.info('error connecting to MongoDB:', err.message))
 
 app.use(middleware.requestLogger)
 
