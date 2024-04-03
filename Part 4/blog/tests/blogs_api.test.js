@@ -31,7 +31,8 @@ describe('blogs', () => {
 	test('check that id is named id', async () => {
 		const response = await api.get('/api/blogs')
 		const contents = response.body.map(e => e)
-		assert(contents[0].hasOwnProperty('id'), true)
+		const object = contents[0]
+		assert(object.hasOwnProperty('id'), true)
 	})
 
 	test('a blog is created', async () => {
@@ -64,6 +65,30 @@ describe('blogs', () => {
 			.expect('Content-Type', /application\/json/)
 
 		assert.strictEqual(response.body.likes, 0)
+	})
+
+	test('url is missing', async () => {
+		const blogObject = {
+			author: 'The dev',
+			title: 'url is missing',
+			likes: 1
+		}
+		await api
+			.post('/api/blogs/')
+			.send(blogObject)
+			.expect(400)
+	})
+
+	test('title is missing', async () => {
+		const blogObject = {
+			author: 'The dev',
+			url: 'superfake.org',
+			likes: 1
+		}
+		await api
+			.post('/api/blogs/')
+			.send(blogObject)
+			.expect(400)
 	})
 
 })
