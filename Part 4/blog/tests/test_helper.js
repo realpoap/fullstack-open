@@ -7,7 +7,6 @@ const initBlog = async () => {
 }
 
 
-
 module.exports = {
   initBlog,
 }
