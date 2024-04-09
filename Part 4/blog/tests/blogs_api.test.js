@@ -7,20 +7,17 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
 const blogs = require('../utils/posts_examples')
+const { log } = require('node:console')
 
 const api = supertest(app)
 
 beforeEach(async () => {
 	await Blog.deleteMany({})
-
-	for (let blog of blogs) {
-		const blogObject = new Blog(blog)
-		await blogObject.save()
-	}
+	await Blog.insertMany(blogs)
 
 })
 
-describe('blogs', () => {
+describe('get blogs', () => {
 	test('get all blogs as JSON', async () => {
 		await api
 			.get('/api/blogs')
@@ -34,6 +31,10 @@ describe('blogs', () => {
 		const object = contents[0]
 		assert(object.hasOwnProperty('id'), true)
 	})
+
+})
+
+describe('post blog', () => {
 
 	test('a blog is created', async () => {
 		const blogObject = {
@@ -49,7 +50,7 @@ describe('blogs', () => {
 			.expect('Content-Type', /application\/json/)
 
 		const blogsInDB = await helper.initBlog()
-		assert(blogsInDB.length, blogs.length + 1)
+		assert.strictEqual(blogsInDB.length, blogs.length + 1)
 	})
 
 	test('if no likes property, set to 0', async () => {
@@ -77,6 +78,11 @@ describe('blogs', () => {
 			.post('/api/blogs/')
 			.send(blogObject)
 			.expect(400)
+
+
+		const blogsInDB = await helper.initBlog()
+		assert.strictEqual(blogsInDB.length, blogs.length)
+
 	})
 
 	test('title is missing', async () => {
@@ -89,8 +95,45 @@ describe('blogs', () => {
 			.post('/api/blogs/')
 			.send(blogObject)
 			.expect(400)
+
+
+		const blogsInDB = await helper.initBlog()
+		assert.strictEqual(blogsInDB.length, blogs.length)
+	})
+})
+
+describe('update or delete blog', () => {
+	test('delete a post by id', async () => {
+		const blogAtStart = await helper.initBlog()
+
+		await api
+			.delete(`/api/blogs/${blogAtStart[0].id}`)
+			.expect(204)
+
+		const blogsInDB = await helper.initBlog()
+		const content = await blogsInDB.map(r => r.content)
+		assert.strictEqual(blogsInDB.length, blogs.length - 1)
+		assert(!content.includes(blogAtStart[0]))
 	})
 
+	test('update a post by id', async () => {
+		const blogAtStart = await helper.initBlog()
+		const blogToUpdate = blogAtStart[2]
+		const newBlog = {
+			title: blogToUpdate.title,
+			author: blogToUpdate.author,
+			url: blogToUpdate.url,
+			likes: 1
+		}
+
+
+		await api
+			.put(`/api/blogs/${blogToUpdate.id}`)
+			.send(newBlog)
+			.expect(200)
+		const updatedBlog = await Blog.findById(blogToUpdate.id)
+		assert.strictEqual(updatedBlog.likes, 1)
+	})
 })
 
 

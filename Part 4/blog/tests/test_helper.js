@@ -2,7 +2,7 @@ const Blog = require('../models/blog')
 
 
 const initBlog = async () => {
-  const blog = await Blog.find()
+  const blog = await Blog.find({})
   return blog.map(b => b.toJSON())
 }
 
