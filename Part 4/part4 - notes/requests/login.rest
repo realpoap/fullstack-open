@@ -1,0 +1,17 @@
+POST http://localhost:3001/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+	"username":"mathieu",
+	"name": "name",
+	"password":"mathieu"
+}
+
+
+POST http://localhost:3001/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+	"username":"mathieu",
+	"password":"mathieu"
+}
