@@ -25,14 +25,7 @@ module.exports = {
     'ecmaVersion': 'latest'
   },
   'rules': {
-    '@stylistic/js/indent': [
-      'error',
-      2
-    ],
-    '@stylistic/js/linebreak-style': [
-      'error',
-      'unix'
-    ],
+    '@stylistic/js/indent': 'off',
     '@stylistic/js/quotes': [
       'error',
       'single'
@@ -49,6 +42,7 @@ module.exports = {
     'arrow-spacing': [
       'error', { 'before': true, 'after': true }
     ],
-    'no-console':0
+    'no-console': 0,
+
   },
 }
