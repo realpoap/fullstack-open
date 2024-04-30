@@ -1,13 +1,14 @@
 const { test, after, describe, beforeEach } = require('node:test')
+const bcrypt = require('bcrypt')
 const assert = require('node:assert')
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 const blogs = require('../utils/posts_examples')
-const { log } = require('node:console')
 
 const api = supertest(app)
 
@@ -34,7 +35,17 @@ describe('get blogs', () => {
 
 })
 
+
 describe('post blog', () => {
+
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'admin', passwordHash })
+
+    await user.save()
+  })
 
   test('a blog is created', async () => {
     const blogObject = {
@@ -51,6 +62,26 @@ describe('post blog', () => {
 
     const blogsInDB = await helper.initBlog()
     assert.strictEqual(blogsInDB.length, blogs.length + 1)
+  })
+
+  test('an user is associated at the creation of a blog', async () => {
+    const blogObject = {
+      author: 'The dev',
+      title: 'has user',
+      url: 'www.thisisfake.net',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blogObject)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const user = User.findOne({ username: 'admin' })
+    const blogPosted = Blog.findOne({ title: 'has user' })
+
+    assert(blogPosted.user = user)
   })
 
   test('if no likes property, set to 0', async () => {
@@ -89,7 +120,7 @@ describe('post blog', () => {
     const blogObject = {
       author: 'The dev',
       url: 'superfake.org',
-      likes: 1
+      likes: 1,
     }
     await api
       .post('/api/blogs/')
@@ -123,7 +154,8 @@ describe('update or delete blog', () => {
       title: blogToUpdate.title,
       author: blogToUpdate.author,
       url: blogToUpdate.url,
-      likes: 1
+      likes: 1,
+      user: blogToUpdate.user
     }
 
 
