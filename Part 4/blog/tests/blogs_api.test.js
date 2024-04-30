@@ -35,6 +35,43 @@ describe('get blogs', () => {
 
 })
 
+describe('user management', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'admin', passwordHash })
+
+    await user.save()
+  })
+
+  test('username is incorrect, user not created', async () => {
+    const userObject = { username: 'ro', password: 'password' }
+
+    const response = await api
+      .post('/api/users')
+      .send(userObject)
+      .expect(400)
+
+    console.error('Error : ', response.body.error)
+
+
+  })
+
+  test('password is incorrect, user not created', async () => {
+    const userObject = { username: 'root', password: 'pa' }
+
+    const response = await api
+      .post('/api/users')
+      .send(userObject)
+      .expect(400)
+
+    console.error('Error : ', response.body.error)
+
+  })
+
+})
+
 
 describe('post blog', () => {
 

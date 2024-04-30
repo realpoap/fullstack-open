@@ -11,18 +11,22 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
 	const { username, name, password } = request.body
 
-	const saltRounds = 10
-	const passwordHash = await bcrypt.hash(password, saltRounds)
+	if (username.length > 2 && password.length > 2) {
+		const saltRounds = 10
+		const passwordHash = await bcrypt.hash(password, saltRounds)
 
-	const user = new User({
-		username,
-		name,
-		passwordHash,
-	})
-	const savedUser = await user.save()
+		const user = new User({
+			username,
+			name,
+			passwordHash,
+		})
+		const savedUser = await user.save()
 
-
-	response.status(201).json(savedUser)
+		response.status(201).json(savedUser)
+	}
+	else {
+		response.status(400).json({ error: 'username or password invalid' })
+	}
 
 })
 

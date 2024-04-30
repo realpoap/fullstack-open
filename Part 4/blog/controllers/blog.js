@@ -21,7 +21,6 @@ blogRouter.post('/', async (request, response) => {
   else {
 
     const user = await User.findOne({}).exec()
-    console.log('user :', user)
 
     const blog = new Blog({
       title: body.title,
@@ -33,7 +32,6 @@ blogRouter.post('/', async (request, response) => {
     const returnedBlog = await blog.save()
 
     user.blogs = user.blogs.concat(returnedBlog._id)
-    console.log('user after save :', user)
     await user.save()
 
     response.status(201).json(returnedBlog)
