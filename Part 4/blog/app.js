@@ -24,6 +24,7 @@ mongoose.connect(mongoUrl)
   .then(() => logger.info('connected to MongoDB'))
   .catch(err => logger.info('error connecting to MongoDB:', err.message))
 
+app.use(middleware.tokenExtractor)
 app.use(middleware.requestLogger)
 
 app.use('/api/blogs', blogRouter)
