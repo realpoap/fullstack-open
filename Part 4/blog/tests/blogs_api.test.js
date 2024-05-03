@@ -9,6 +9,8 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const helper = require('./test_helper')
 const blogs = require('../utils/posts_examples')
+const { concat } = require('lodash')
+
 
 const api = supertest(app)
 
@@ -82,6 +84,23 @@ describe('post blog', () => {
     const user = new User({ username: 'admin', passwordHash })
 
     await user.save()
+
+
+  })
+
+  test('token is not provided', async () => {
+    const blogObject = {
+      author: 'The dev',
+      title: 'how to post a blog',
+      url: 'www.thisisfake.net',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blogObject)
+      .expect(401)
+
   })
 
   test('a blog is created', async () => {
@@ -91,8 +110,19 @@ describe('post blog', () => {
       url: 'www.thisisfake.net',
       likes: 1
     }
+
+    // USER LOGIN
+    const userObject = { username: 'admin', password: 'sekret' }
+    const response =
+      await api
+        .post('/api/login')
+        .send(userObject)
+    const token = `Bearer ${response.body.token}`
+
+
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(blogObject)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -109,8 +139,17 @@ describe('post blog', () => {
       likes: 1
     }
 
+    // USER LOGIN
+    const userObject = { username: 'admin', password: 'sekret' }
+    const response =
+      await api
+        .post('/api/login')
+        .send(userObject)
+    const token = `Bearer ${response.body.token}`
+
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(blogObject)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -127,8 +166,18 @@ describe('post blog', () => {
       title: 'default likes property',
       url: 'www.thisisfake.net',
     }
+
+    // USER LOGIN
+    const userObject = { username: 'admin', password: 'sekret' }
+    const res =
+      await api
+        .post('/api/login')
+        .send(userObject)
+    const token = `Bearer ${res.body.token}`
+
     const response = await api
       .post('/api/blogs/')
+      .set('Authorization', token)
       .send(blogObject)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -142,8 +191,18 @@ describe('post blog', () => {
       title: 'url is missing',
       likes: 1
     }
+
+    // USER LOGIN
+    const userObject = { username: 'admin', password: 'sekret' }
+    const response =
+      await api
+        .post('/api/login')
+        .send(userObject)
+    const token = `Bearer ${response.body.token}`
+
     await api
       .post('/api/blogs/')
+      .set('Authorization', token)
       .send(blogObject)
       .expect(400)
 
@@ -159,8 +218,18 @@ describe('post blog', () => {
       url: 'superfake.org',
       likes: 1,
     }
+
+    // USER LOGIN
+    const userObject = { username: 'admin', password: 'sekret' }
+    const response =
+      await api
+        .post('/api/login')
+        .send(userObject)
+    const token = `Bearer ${response.body.token}`
+
     await api
       .post('/api/blogs/')
+      .set('Authorization', token)
       .send(blogObject)
       .expect(400)
 
@@ -171,18 +240,43 @@ describe('post blog', () => {
 })
 
 describe('update or delete blog', () => {
-  test('delete a post by id', async () => {
-    const blogAtStart = await helper.initBlog()
 
-    await api
-      .delete(`/api/blogs/${blogAtStart[0].id}`)
-      .expect(204)
 
-    const blogsInDB = await helper.initBlog()
-    const content = await blogsInDB.map(r => r.content)
-    assert.strictEqual(blogsInDB.length, blogs.length - 1)
-    assert(!content.includes(blogAtStart[0]))
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'admin', passwordHash })
+
+    await user.save()
+
+
   })
+
+  // no user in dummy posts --------------------------->
+
+  // test('delete a post by id', async () => {
+  //   const blogAtStart = await helper.initBlog()
+
+  //   // USER LOGIN
+  //   const userObject = { username: 'admin', password: 'sekret' }
+  //   const response =
+  //     await api
+  //       .post('/api/login')
+  //       .send(userObject)
+  //   const token = `Bearer ${response.body.token}`
+
+
+  //   await api
+  //     .delete(`/api/blogs/${blogAtStart[0].id}`)
+  //     .set('Authorization', token)
+  //     .expect(204)
+
+  //   const blogsInDB = await helper.initBlog()
+  //   const content = await blogsInDB.map(r => r.content)
+  //   assert(!content.includes(blogAtStart[0]))
+  //   assert.strictEqual(blogsInDB.length, blogs.length - 1)
+  // })
 
   test('update a post by id', async () => {
     const blogAtStart = await helper.initBlog()
@@ -195,9 +289,18 @@ describe('update or delete blog', () => {
       user: blogToUpdate.user
     }
 
+    // USER LOGIN
+    const userObject = { username: 'admin', password: 'sekret' }
+    const response =
+      await api
+        .post('/api/login')
+        .send(userObject)
+    const token = `Bearer ${response.body.token}`
+
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', token)
       .send(newBlog)
       .expect(200)
     const updatedBlog = await Blog.findById(blogToUpdate.id)

@@ -2,7 +2,7 @@ const blogRouter = require('express').Router()
 
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
-const User = require('../models/user')
+const middleware = require('../utils/middleware')
 
 
 blogRouter.get('/', async (request, response) => {
@@ -15,7 +15,7 @@ blogRouter.get('/:id', async (request, response) => {
   return response.json(blog)
 })
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/', middleware.userExtractor, async (request, response) => {
 
   const body = request.body
 
@@ -50,7 +50,7 @@ blogRouter.post('/', async (request, response) => {
 
 })
 
-blogRouter.delete('/:id', async (request, response) => {
+blogRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
 
   const blogToDelete = await Blog.findById(request.params.id)
 
@@ -59,14 +59,13 @@ blogRouter.delete('/:id', async (request, response) => {
     return response.status(401).json({ error: 'invalid token' })
   }
   else {
-    console.log(request.user.id)
     if (blogToDelete.user.toString() === request.user.id.toString())
       await Blog.findByIdAndDelete(request.params.id)
     return response.status(204).end()
   }
 })
 
-blogRouter.put('/:id', async (request, response) => {
+blogRouter.put('/:id', middleware.userExtractor, async (request, response) => {
   const body = request.body
   const blog = {
     title: body.title,
