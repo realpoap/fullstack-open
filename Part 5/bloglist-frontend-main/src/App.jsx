@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [errorType, setErrorType] = useState('')
 
   const [author, setAuthor] = useState('')
   const [title, setTitle] = useState('')
@@ -38,9 +41,21 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setErrorMessage('Successfully logged in')
+      setErrorType('success')
+      setTimeout(() => {
+        setErrorMessage('')
+        setErrorType('')
+      }, 5000)
     }
     catch (exception) {
-      console.log('error loggin in');
+      console.log('error loggin in')
+      setErrorMessage('Wrong credentials')
+      setErrorType('error')
+      setTimeout(() => {
+        setErrorMessage('')
+        setErrorType('')
+      }, 5000)
     }
   }
 
@@ -64,16 +79,25 @@ const App = () => {
       .then(returnedObject => {
         console.log('returned');
         setBlogs(blogs.concat(returnedObject))
+        setErrorMessage(`New blog "${title}" added !`)
+        setErrorType('success')
+        setTimeout(() => {
+          setErrorMessage('')
+          setErrorType('')
+        }, 5000)
 
         setAuthor('')
         setTitle('')
         setUrl('')
       })
+
   }
 
   if (user === null) {
     return (
       <div>
+        <Notification message={errorMessage} type={errorType} />
+
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -92,6 +116,8 @@ const App = () => {
 
   return (
     <div>
+      <h1>Blogs</h1>
+      <Notification message={errorMessage} type={errorType} />
       <div>
         <p>{user.name} is logged in</p>
         <button type='text' name='logout' onClick={handleLogout}>logout</button>
