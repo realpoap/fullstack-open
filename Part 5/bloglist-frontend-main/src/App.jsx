@@ -15,10 +15,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [errorType, setErrorType] = useState('')
 
-  const [author, setAuthor] = useState('')
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
-
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -72,28 +68,20 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const createNew = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url,
-    }
+  const createNew = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
       .then(returnedObject => {
         setBlogs(blogs.concat(returnedObject))
-        setErrorMessage(`New blog "${title}" added !`)
+        setErrorMessage(`New blog "${blogObject.title}" added !`)
         setErrorType('success')
         setTimeout(() => {
           setErrorMessage('')
           setErrorType('')
         }, 5000)
 
-        setAuthor('')
-        setTitle('')
-        setUrl('')
+
       })
 
   }
@@ -128,13 +116,7 @@ const App = () => {
 
         <Togglable buttonLabel={'new blog'} ref={blogFormRef}>
           <BlogForm
-            createNew={createNew}
-            author={author}
-            title={title}
-            url={url}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value)}
+            createBlog={createNew}
           />
         </Togglable>
 
