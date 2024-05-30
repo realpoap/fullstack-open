@@ -5,7 +5,12 @@ const bcrypt = require('bcrypt')
 
 usersRouter.get('/', async (request, response) => {
 	const users = await User.find({})
-	response.json(users)
+	return response.json(users)
+})
+
+usersRouter.get('/:id', async (request, response) => {
+	const user = await User.findById(request.params.id)
+	return response.json(user)
 })
 
 usersRouter.post('/', async (request, response) => {

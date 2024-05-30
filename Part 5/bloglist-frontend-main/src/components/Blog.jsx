@@ -1,8 +1,18 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
 
   const [detailsVisibility, setDetailsVisibility] = useState(false)
+
+  const [blogUser, setBlogUser] = useState(null)
+  const [blogObject, setBlogObject] = useState({
+    user: blog.user,
+    likes: blog.likes,
+    author: blog.author,
+    title: blog.title,
+    url: blog.url
+  })
 
   const blogStyle = {
     paddingTop: 10,
@@ -12,22 +22,44 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
 
+  const userID = blog.user
+
+  useEffect(() => {
+    blogService
+      .getUser(userID)
+      .then(user => {
+        setBlogUser(user)
+      })
+  }, [])
+
+  const incrementLikes = async () => {
+    const blogIncremented = {
+      user: blogObject.user,
+      likes: blogObject.likes + 1,
+      author: blogObject.author,
+      title: blogObject.title,
+      url: blogObject.url
+    }
+    await blogService
+      .update(blog.id, blogIncremented)
+      .then(returnedObject => setBlogObject(returnedObject))
+
+  }
 
 
   return (
     <div style={blogStyle}>
       <div >
-        {blog.title} {blog.author}
+        {blogObject.title}, by {blogObject.author}
       </div>
       <button name="view" onClick={() => setDetailsVisibility(!detailsVisibility)}>
         {detailsVisibility ? 'hide' : 'view'}
       </button>
       {detailsVisibility &&
         <div>
-          <p>Url : {blog.url}</p>
-          <p>Likes : {blog.likes} <button>Like</button></p>
-          <p>User : {blog.user}</p>
-          {/* how do you access the user from the front-end ? */}
+          <p>Url : {blogObject.url}</p>
+          <p>Likes : {blogObject.likes} <button onClick={() => incrementLikes()}>Like</button></p>
+          <p>User : {blogUser.username}</p>
         </div>}
     </div >
   )
