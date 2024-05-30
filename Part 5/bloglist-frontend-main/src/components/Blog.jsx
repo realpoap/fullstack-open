@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, sortBlogs }) => {
+const Blog = ({ blog, sortBlogs, deleteBlog }) => {
 
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
@@ -32,7 +32,7 @@ const Blog = ({ blog, sortBlogs }) => {
       })
   }, [])
 
-  const incrementLikes = async () => {
+  const incrementLikes = async (blog) => {
     const blogIncremented = {
       user: blogObject.user,
       likes: blogObject.likes + 1,
@@ -46,7 +46,6 @@ const Blog = ({ blog, sortBlogs }) => {
 
     sortBlogs()
   }
-
 
   return (
     <div style={blogStyle}>
@@ -62,6 +61,7 @@ const Blog = ({ blog, sortBlogs }) => {
           <p>Likes : {blogObject.likes} <button onClick={() => incrementLikes()}>Like</button></p>
           <p>User : {blogUser.username}</p>
         </div>}
+      <button style={{ backgroundColor: 'red' }} onClick={() => deleteBlog(blog.id)}>remove</button>
     </div >
   )
 

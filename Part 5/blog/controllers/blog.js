@@ -55,7 +55,7 @@ blogRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
   const blogToDelete = await Blog.findById(request.params.id)
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
+  if (!decodedToken.id || !blogToDelete) {
     return response.status(401).json({ error: 'invalid token' })
   }
   else {

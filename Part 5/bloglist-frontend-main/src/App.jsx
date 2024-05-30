@@ -15,6 +15,8 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [errorType, setErrorType] = useState('')
 
+  const [sortedBlogs, setSortedBlogs] = useState([])
+
 
   const blogFormRef = useRef()
 
@@ -25,12 +27,6 @@ const App = () => {
         setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
   }, [])
 
-  const sortBlogs = () => {
-    console.log('sorting blogs...');
-    const sortedData = [...blogs].sort((a, b) => b.likes - a.likes)
-    setBlogs(sortedData)
-  }
-
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -40,6 +36,14 @@ const App = () => {
     }
   }, [])
 
+  const sortBlogs = () => {
+    console.log('sorting blogs...');
+    // setSortedBlogs([...blogs].sort((a, b) => b.likes - a.likes))
+    // setBlogs(sortedBlogs)
+    blogService.getAll()
+      .then(blogs =>
+        setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -65,7 +69,7 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage('')
         setErrorType('')
-      }, 5000)
+      }, 3000)
     }
   }
 
@@ -88,11 +92,25 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage('')
           setErrorType('')
-        }, 5000)
+        }, 3000)
+      })
+  }
 
-
+  const deleteBlog = async (id) => {
+    console.log('deleting ?');
+    await blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id === id))
+        setErrorMessage(`Deleted blog "${id}" !`)
+        setErrorType('success')
+        setTimeout(() => {
+          setErrorMessage('')
+          setErrorType('')
+        }, 3000)
       })
 
+    sortBlogs()
   }
 
 
@@ -137,7 +155,7 @@ const App = () => {
         <h2>Blogs</h2>
         {
           blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} sortBlogs={sortBlogs} />
+            <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} sortBlogs={sortBlogs} />
           )
         }
       </div>
