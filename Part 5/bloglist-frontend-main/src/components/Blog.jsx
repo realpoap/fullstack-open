@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, sortBlogs }) => {
 
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
@@ -44,6 +44,7 @@ const Blog = ({ blog }) => {
       .update(blog.id, blogIncremented)
       .then(returnedObject => setBlogObject(returnedObject))
 
+    sortBlogs()
   }
 
 
