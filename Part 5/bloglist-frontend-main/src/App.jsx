@@ -96,19 +96,20 @@ const App = () => {
       })
   }
 
-  const deleteBlog = async (id) => {
+  const deleteBlog = async (blog) => {
     console.log('deleting ?');
-    await blogService
-      .remove(id)
-      .then(() => {
-        setBlogs(blogs.filter(blog => blog.id === id))
-        setErrorMessage(`Deleted blog "${id}" !`)
-        setErrorType('success')
-        setTimeout(() => {
-          setErrorMessage('')
-          setErrorType('')
-        }, 3000)
-      })
+    if (window.confirm(`delete post ${blog.title} by ${blog.author} ?`))
+      await blogService
+        .remove(blog.id)
+        .then(() => {
+          setBlogs(blogs.filter(b => b.id === blog.id))
+          setErrorMessage(`Deleted blog "${blog.title}" !`)
+          setErrorType('success')
+          setTimeout(() => {
+            setErrorMessage('')
+            setErrorType('')
+          }, 3000)
+        })
 
     sortBlogs()
   }
@@ -155,7 +156,7 @@ const App = () => {
         <h2>Blogs</h2>
         {
           blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} sortBlogs={sortBlogs} />
+            <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} sortBlogs={sortBlogs} user={user} />
           )
         }
       </div>

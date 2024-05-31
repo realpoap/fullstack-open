@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, sortBlogs, deleteBlog }) => {
+const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
 
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
   const [blogUser, setBlogUser] = useState(null)
+  const [removeBtn, setRemoveBtn] = useState(false)
+
   const [blogObject, setBlogObject] = useState({
     user: blog.user,
     likes: blog.likes,
@@ -22,11 +24,9 @@ const Blog = ({ blog, sortBlogs, deleteBlog }) => {
     marginBottom: 5
   }
 
-  const userID = blog.user
-
   useEffect(() => {
     blogService
-      .getUser(userID)
+      .getUser(blog.user)
       .then(user => {
         setBlogUser(user)
       })
@@ -47,6 +47,14 @@ const Blog = ({ blog, sortBlogs, deleteBlog }) => {
     sortBlogs()
   }
 
+  useEffect(() => {
+    if (user && blogUser && user.name === blogUser.name) {
+      setRemoveBtn(true)
+    }
+    // would like to use the blog.user and user.id but user only stores the token, username and name, shall I implement this or is it a security risk ?
+  }, [user])
+
+
   return (
     <div style={blogStyle}>
       <div >
@@ -60,8 +68,9 @@ const Blog = ({ blog, sortBlogs, deleteBlog }) => {
           <p>Url : {blogObject.url}</p>
           <p>Likes : {blogObject.likes} <button onClick={() => incrementLikes()}>Like</button></p>
           <p>User : {blogUser.username}</p>
+          {removeBtn && <button style={{ backgroundColor: 'red' }} onClick={() => deleteBlog(blog)}>remove</button>}
+
         </div>}
-      <button style={{ backgroundColor: 'red' }} onClick={() => deleteBlog(blog.id)}>remove</button>
     </div >
   )
 
