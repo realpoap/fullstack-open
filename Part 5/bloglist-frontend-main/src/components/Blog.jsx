@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
+
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
 
@@ -30,7 +32,7 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
       .then(user => {
         setBlogUser(user)
       })
-  }, [])
+  }, [blog.user])
 
   const incrementLikes = async (blog) => {
     const blogIncremented = {
@@ -52,7 +54,7 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
       setRemoveBtn(true)
     }
     // would like to use the blog.user and user.id but user only stores the token, username and name, shall I implement this or is it a security risk ?
-  }, [user])
+  }, [blogUser, user])
 
 
   return (
@@ -75,6 +77,13 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
   )
 
 
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  sortBlogs: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
 }
 
 export default Blog
