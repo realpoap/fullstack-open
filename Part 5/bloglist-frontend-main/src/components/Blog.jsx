@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+
 import blogService from '../services/blogs'
 
 import PropTypes from 'prop-types'
@@ -62,13 +63,13 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
       <div className='blog-info'>
         {blogObject.title}, by {blogObject.author}
       </div>
-      <button name="view" onClick={() => setDetailsVisibility(!detailsVisibility)}>
+      <button name="view" className='btn-show' onClick={() => setDetailsVisibility(!detailsVisibility)}>
         {detailsVisibility ? 'hide' : 'view'}
       </button>
       {detailsVisibility &&
         <div>
           <p>Url : {blogObject.url}</p>
-          <p>Likes : {blogObject.likes} <button onClick={() => incrementLikes()}>Like</button></p>
+          <p>Likes : {blogObject.likes} <button className={'likeBtn'} onClick={() => incrementLikes()}>Like</button></p>
           <p>User : {blogUser.username}</p>
           {removeBtn && <button style={{ backgroundColor: 'red' }} onClick={() => deleteBlog(blog)}>remove</button>}
 
