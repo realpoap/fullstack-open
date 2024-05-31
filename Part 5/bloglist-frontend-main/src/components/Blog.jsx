@@ -59,7 +59,7 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
 
   return (
     <div style={blogStyle}>
-      <div >
+      <div className='blog-info'>
         {blogObject.title}, by {blogObject.author}
       </div>
       <button name="view" onClick={() => setDetailsVisibility(!detailsVisibility)}>
