@@ -80,7 +80,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentialts')
+      setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -113,7 +113,7 @@ const App = () => {
 
       {user && <div>
         <p>{user.name} logged in</p>
-        <Togglable buttonLabel="new Note" ref={noteFormRef}>
+        <Togglable buttonLabel="new note" ref={noteFormRef}>
           <NoteForm
             createNote={addNote}
           />
