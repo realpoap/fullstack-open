@@ -64,7 +64,7 @@ const App = () => {
     }
     catch (exception) {
       console.log('error loggin in')
-      setErrorMessage('Wrong credentials')
+      setErrorMessage('wrong credentials')
       setErrorType('error')
       setTimeout(() => {
         setErrorMessage('')

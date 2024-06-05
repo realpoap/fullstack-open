@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "test": "cross-env NODE_ENV=test node --test",
+    "start": "SET NODE_ENV=production&& node index.js",
+    "dev": "SET NODE_ENV=development&& nodemon index.js",
+    "test": "SET NODE_ENV=test&& node --test",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "start:test": "cross-env NODE_ENV=test &  node index.js"
+    "start:test": "SET NODE_ENV=test&& node index.js"
   },
   "author": "Poap",
   "license": "MIT",
