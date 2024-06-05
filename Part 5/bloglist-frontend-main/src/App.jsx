@@ -120,16 +120,14 @@ const App = () => {
       <Notification message={errorMessage} type={errorType} />
 
       {!user && <div>
-        <Togglable buttonLabel={'Log in'}>
 
-          <LoginForm
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            username={username}
-            password={password}
-            handleSubmit={handleLogin}
-          />
-        </Togglable>
+        <LoginForm
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          username={username}
+          password={password}
+          handleSubmit={handleLogin}
+        />
 
 
 
