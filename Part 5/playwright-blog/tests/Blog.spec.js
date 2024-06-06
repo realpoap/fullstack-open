@@ -58,5 +58,20 @@ describe('Blog App', () => {
 			await expect(page.getByText('Likes : 1')).toBeVisible()
 
 		})
+
+		test('a blog can be removed', async ({ page }) => {
+			await loginWith(page, 'poap', 'root')
+			await createBlog(page, 'Robin Hobbs', `Fool's Errand`, 'www.books.net')
+			await page.getByRole('button', { name: 'view' }).waitFor()
+
+			await page.getByRole('button', { name: 'view' }).click();
+
+			await page.getByRole('button', { name: 'remove' }).waitFor()
+			page.on('dialog', dialog => dialog.accept());
+			await page.getByRole('button', { name: 'remove' }).click()
+
+			await expect(page.getByText(`Fool's Errand, by Robin Hobb`)).not.toBeVisible()
+
+		});
 	})
 })

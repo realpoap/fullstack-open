@@ -88,7 +88,7 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
             </button>
           </p>
           <p>User : {blogUser.username}</p>
-          {removeBtn && <button style={{ backgroundColor: 'red' }} onClick={() => deleteBlog(blog)}>remove</button>}
+          {removeBtn && <button style={{ backgroundColor: 'red' }} className='deleteBtn' onClick={() => deleteBlog(blog)}>remove</button>}
 
         </div>
 
