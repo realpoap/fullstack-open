@@ -15,9 +15,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [errorType, setErrorType] = useState('')
 
-  const [sortedBlogs, setSortedBlogs] = useState([])
-
-
   const blogFormRef = useRef()
 
   useEffect(() => {

@@ -16,7 +16,8 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
     likes: blog.likes,
     author: blog.author,
     title: blog.title,
-    url: blog.url
+    url: blog.url,
+    id: blog.id
   })
 
   const blogStyle = {
@@ -44,7 +45,7 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
       url: blogObject.url
     }
     await blogService
-      .update(blog.id, blogIncremented)
+      .update(blogObject.id, blogIncremented)
       .then(returnedObject => setBlogObject(returnedObject))
 
     sortBlogs()
@@ -57,23 +58,41 @@ const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
     // would like to use the blog.user and user.id but user only stores the token, username and name, shall I implement this or is it a security risk ?
   }, [blogUser, user])
 
+  const BlogDetails = () => {
+
+  }
+
 
   return (
     <div style={blogStyle}>
       <div className='blog-info'>
         {blogObject.title}, by {blogObject.author}
       </div>
-      <button name="view" className='btn-show' onClick={() => setDetailsVisibility(!detailsVisibility)}>
+      <button
+        name="view"
+        className='btn-show'
+        onClick={() => setDetailsVisibility(!detailsVisibility)}
+      >
         {detailsVisibility ? 'hide' : 'view'}
       </button>
-      {detailsVisibility &&
+      {detailsVisibility ? (
         <div>
+          <p>blog ID : {blogObject.id}</p>
           <p>Url : {blogObject.url}</p>
-          <p>Likes : {blogObject.likes} <button className={'likeBtn'} onClick={() => incrementLikes()}>Like</button></p>
+          <p>Likes : {blogObject.likes}
+            <button
+              className={'likeBtn'}
+              onClick={() => incrementLikes()}
+            >
+              Like
+            </button>
+          </p>
           <p>User : {blogUser.username}</p>
           {removeBtn && <button style={{ backgroundColor: 'red' }} onClick={() => deleteBlog(blog)}>remove</button>}
 
-        </div>}
+        </div>
+
+      ) : null}
     </div >
   )
 

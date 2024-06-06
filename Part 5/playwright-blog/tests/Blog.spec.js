@@ -4,15 +4,15 @@ const { loginWith, createBlog } = require('./helper')
 describe('Blog App', () => {
 
 	beforeEach(async ({ page, request }) => {
-		await request.post('http://localhost:5173/api/testing/reset')
-		await request.post('http://localhost:5173/api/users', {
+		await request.post('/api/testing/reset')
+		await request.post('/api/users', {
 			data: {
 				name: 'root',
 				username: 'poap',
 				password: 'root'
 			}
 		})
-		await page.goto('http://localhost:5173')
+		await page.goto('/')
 	})
 
 	test('login form is visible by default', async ({ page }) => {
@@ -43,6 +43,20 @@ describe('Blog App', () => {
 			await createBlog(page, 'Robin Hobbs', 'Royal Assassin', 'www.books.net')
 			await expect(page.getByText('New blog "Royal Assassin" added !')).toBeVisible()
 			await expect(page.getByText('Royal Assassin, by Robin Hobbs')).toBeVisible()
+		})
+
+		test('a blog can be liked', async ({ page }) => {
+			await loginWith(page, 'poap', 'root')
+			await createBlog(page, 'Robin Hobbs', 'Royal Assassin', 'www.books.net')
+
+			//await page.getByText('Royal Assassin, by Robin')
+			await page.getByRole('button', { name: 'view' }).waitFor()
+			await page.getByRole('button', { name: 'view' }).click()
+
+			await page.getByRole('button', { name: 'Like' }).click()
+
+			await expect(page.getByText('Likes : 1')).toBeVisible()
+
 		})
 	})
 })
