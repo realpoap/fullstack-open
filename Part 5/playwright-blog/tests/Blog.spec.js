@@ -12,6 +12,13 @@ describe('Blog App', () => {
 				password: 'root'
 			}
 		})
+		await request.post('/api/users', {
+			data: {
+				name: 'admin',
+				username: 'admin',
+				password: 'admin'
+			}
+		})
 		await page.goto('/')
 	})
 
@@ -49,7 +56,6 @@ describe('Blog App', () => {
 			await loginWith(page, 'poap', 'root')
 			await createBlog(page, 'Robin Hobbs', 'Royal Assassin', 'www.books.net')
 
-			//await page.getByText('Royal Assassin, by Robin')
 			await page.getByRole('button', { name: 'view' }).waitFor()
 			await page.getByRole('button', { name: 'view' }).click()
 
@@ -63,7 +69,6 @@ describe('Blog App', () => {
 			await loginWith(page, 'poap', 'root')
 			await createBlog(page, 'Robin Hobbs', `Fool's Errand`, 'www.books.net')
 			await page.getByRole('button', { name: 'view' }).waitFor()
-
 			await page.getByRole('button', { name: 'view' }).click();
 
 			await page.getByRole('button', { name: 'remove' }).waitFor()
@@ -73,5 +78,43 @@ describe('Blog App', () => {
 			await expect(page.getByText(`Fool's Errand, by Robin Hobb`)).not.toBeVisible()
 
 		});
+
+		test('delete button is not showned if you are not the owner', async ({ page }) => {
+			await loginWith(page, 'admin', 'admin')
+			await createBlog(page, 'Robin Hobbs', `City of Dragon`, 'www.books.net')
+			await page.getByRole('button', { name: 'logout' }).click()
+			await page.getByRole('button', { name: 'login' }).waitFor()
+
+			await loginWith(page, 'poap', 'root')
+
+			await page.getByRole('button', { name: 'view' }).waitFor()
+			await page.getByRole('button', { name: 'view' }).click();
+
+			await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+
+		})
+
+		test('the blogs are sorted', async ({ page }) => {
+			await loginWith(page, 'poap', 'root')
+
+			await createBlog(page, 'Robin Hobbs', 'Royal Assassin', 'www.books.net')
+			await createBlog(page, 'Robin Hobbs', `City of Dragon`, 'www.books.net')
+
+			//await page.reload();
+
+
+			const lastDiv = await page.locator('div.blogdiv').last()
+
+			await lastDiv.getByRole('button', { name: 'view' }).waitFor();
+			await lastDiv.getByRole('button', { name: 'view' }).click();
+
+			await lastDiv.getByRole('button', { name: 'Like' }).click();
+			await lastDiv.getByText('Likes : 1').waitFor()
+
+			const firstDiv = await page.locator('div.blogdiv').first()
+			await expect(firstDiv.getByText('City of Dragon')).toBeVisible()
+
+
+		})
 	})
 })
