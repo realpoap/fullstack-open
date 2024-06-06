@@ -113,6 +113,7 @@ describe('Blog App', () => {
 
 			const firstDiv = await page.locator('div.blogdiv').first()
 			await expect(firstDiv.getByText('City of Dragon')).toBeVisible()
+			// some bugs sometimes ?
 
 
 		})
