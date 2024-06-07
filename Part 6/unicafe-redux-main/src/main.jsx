@@ -11,25 +11,41 @@ const App = () => {
     store.dispatch({
       type: 'GOOD'
     })
-
-    return (
-      <div>
-        <button onClick={good}>good</button>
-        <button>ok</button>
-        <button>bad</button>
-        <button>reset stats</button>
-        <div>good {store.getState().good}</div>
-        <div>ok</div>
-        <div>bad</div>
-      </div>
-    )
+  }
+  const ok = () => {
+    store.dispatch({
+      type: 'OK'
+    })
+  }
+  const bad = () => {
+    store.dispatch({
+      type: 'BAD'
+    })
+  }
+  const reset = () => {
+    store.dispatch({
+      type: 'ZERO'
+    })
   }
 
-  const root = ReactDOM.createRoot(document.getElementById('root'))
+  return (
+    <div>
+      <button onClick={good}>good</button>
+      <button onClick={ok}>ok</button>
+      <button onClick={bad}>bad</button>
+      <button onClick={reset}>reset stats</button>
+      <div>good : {store.getState().good}</div>
+      <div>ok : {store.getState().ok}</div>
+      <div>bad : {store.getState().bad}</div>
+    </div>
+  )
+}
 
-  const renderApp = () => {
-    root.render(<App />)
-  }
+const root = ReactDOM.createRoot(document.getElementById('root'))
 
-  renderApp()
-  store.subscribe(renderApp)
+const renderApp = () => {
+  root.render(<App />)
+}
+
+renderApp()
+store.subscribe(renderApp)
