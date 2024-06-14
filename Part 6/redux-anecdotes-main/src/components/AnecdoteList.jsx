@@ -9,6 +9,7 @@ const AnecdoteList = () => {
 
 		}
 		else {
+			console.log(state.anecdotes)
 			return state.anecdotes
 		}
 	})
@@ -22,7 +23,7 @@ const AnecdoteList = () => {
 	return (
 		<div>
 
-			{anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
+			{[...anecdotes].sort((a, b) => b.votes - a.votes).map(anecdote =>
 				<div key={anecdote.id}>
 					<div>
 						{anecdote.content}
