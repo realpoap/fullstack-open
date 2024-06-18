@@ -38,6 +38,11 @@
       "id": "452a",
       "content": "testing backend",
       "votes": 0
+    },
+    {
+      "id": "6ee0",
+      "content": "testing Redux Thunk",
+      "votes": 0
     }
   ]
 }
