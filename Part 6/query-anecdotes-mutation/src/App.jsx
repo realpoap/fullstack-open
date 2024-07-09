@@ -1,32 +1,41 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { deleteAnecdote, getAnecdotes, updateAnecdote } from './request'
+import { useContext } from 'react'
 
+import { deleteAnecdote, getAnecdotes, updateAnecdote } from './request'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+
+import NotifContext from './NotificationContext'
 
 const App = () => {
 
   const queryClient = useQueryClient()
+
+  const [notif, notifDispatch] = useContext(NotifContext)
 
   const updateAnecdoteMutation = useMutation({
     mutationFn: updateAnecdote,
     onSuccess: () => {
       console.log('updating...')
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-      // I spent hours trying to get the query to fire again...
-      // queryClient.fetchQueries({ queryKey: ['anecdotes'], queryFn: getAnecdotes })
+
     }
   })
 
   const deleteAnecdoteMutation = useMutation({
     mutationFn: deleteAnecdote,
-    onSuccess: () => {
+    onSuccess: (anecdote) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+
     }
   })
 
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
+    notifDispatch({ type: 'SET', payload: `${anecdote.content} was upvoted` })
+    setTimeout(() => {
+      notifDispatch({ type: 'RESET' })
+    }, 5000)
   }
 
   const handleDelete = (anecdote) => {
@@ -54,6 +63,8 @@ const App = () => {
       <h3>Anecdote app</h3>
 
       <Notification />
+
+
       <AnecdoteForm />
 
       {[...anecdotes].sort((a, b) => b.votes - a.votes).map(anecdote =>
