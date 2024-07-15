@@ -18,7 +18,9 @@ const App = () => {
     onSuccess: () => {
       console.log('updating...')
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-
+    },
+    onError: () => {
+      notifDispatch({ type: 'SET', payload: 'error' })
     }
   })
 

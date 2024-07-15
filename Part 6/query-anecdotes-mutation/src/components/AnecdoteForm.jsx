@@ -12,8 +12,18 @@ const AnecdoteForm = () => {
 
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: () => {
+    onSuccess: (anecdote) => {
+      notifDispatch({ type: 'SET', payload: `${anecdote.content} was created` })
+      setTimeout(() => {
+        notifDispatch({ type: 'RESET' })
+      }, 5000)
       queryClient.invalidateQueries(['anecdotes'])
+    },
+    onError: (err) => {
+      notifDispatch({ type: 'SET', payload: `Error: ${err}` }) // Just showing the error message, not a pre-made message
+      setTimeout(() => {
+        notifDispatch({ type: 'RESET' })
+      }, 5000)
     }
   })
 
@@ -23,10 +33,6 @@ const AnecdoteForm = () => {
     event.target.anecdote.value = ''
     console.log('new anecdote', content)
     newAnecdoteMutation.mutate({ content, votes: 0 })
-    notifDispatch({ type: 'SET', payload: `${content} was created` })
-    setTimeout(() => {
-      notifDispatch({ type: 'RESET' })
-    }, 5000)
   }
 
   return (
