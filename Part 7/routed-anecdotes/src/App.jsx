@@ -59,30 +59,27 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props, notification, setNotification) => {
+const CreateNew = ({ addNew, setNotification }) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-  setNotification = props.setNotification
 
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
+    addNew({
       content,
       author,
       info,
       votes: 0
     })
     navigate('/')
-    console.log(notification)
     setNotification(`Anecdote from author ${author} added !`)
-    setTimeout(
+    setTimeout(() => {
       setNotification('')
-      , 5000)
+    }, 5000)
   }
-
 
   return (
     <div>
@@ -109,7 +106,8 @@ const CreateNew = (props, notification, setNotification) => {
 
 
 const App = () => {
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState('this is a notification')
+
 
 
   const [anecdotes, setAnecdotes] = useState([
@@ -151,6 +149,8 @@ const App = () => {
   }
 
 
+
+
   const padding = {
     paddingRight: 5
   }
@@ -158,10 +158,10 @@ const App = () => {
   return (
     <div>
 
-      <div><p>{notification}</p>
-      </div>
       <h1>Software anecdotes</h1>
 
+      <div><p>{notification}</p>
+      </div>
       <div>
         <Link style={padding} to='/'>Home</Link>
         <Link style={padding} to='/create'>Create</Link>
@@ -174,7 +174,7 @@ const App = () => {
       <Routes>
         <Route path='/anecdotes/:id' element={<Anecdote anecdotes={anecdotes} />} />
         <Route path='/anecdotes' element={<AnecdoteList anecdotes={anecdotes} />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} notification={notification} setNotification={setNotification} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} setNotification={setNotification} />} />
         <Route path='/about' element={<About />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
       </Routes>
