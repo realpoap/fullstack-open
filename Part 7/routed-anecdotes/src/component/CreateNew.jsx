@@ -28,6 +28,13 @@ const CreateNew = ({ addNew, setNotification }) => {
 		}, 5000)
 	}
 
+	const resetFields = (e) => {
+		e.preventDefault()
+		contentField.reset()
+		authorField.reset()
+		infoField.reset()
+	}
+
 	return (
 		<div>
 			<h2>Create a new anecdote</h2>
@@ -43,6 +50,7 @@ const CreateNew = ({ addNew, setNotification }) => {
 				< input {...infoField} />
 				<br />
 				<button>create</button>
+				<button onClick={resetFields}>reset</button>
 			</form >
 		</div >
 	)
