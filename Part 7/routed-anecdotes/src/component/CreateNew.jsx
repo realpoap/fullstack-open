@@ -1,15 +1,20 @@
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { useField } from "../hooks"
+
 const CreateNew = ({ addNew, setNotification }) => {
-	const [content, setContent] = useState('')
-	const [author, setAuthor] = useState('')
-	const [info, setInfo] = useState('')
+	const contentField = useField('text')
+	const authorField = useField('text')
+	const infoField = useField('text')
 
 	const navigate = useNavigate()
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
+		const content = contentField.value
+		const author = authorField.value
+		const info = infoField.value
+
 		addNew({
 			content,
 			author,
@@ -27,21 +32,19 @@ const CreateNew = ({ addNew, setNotification }) => {
 		<div>
 			<h2>Create a new anecdote</h2>
 			<form onSubmit={handleSubmit}>
-				<div>
-					content
-					<input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-				</div>
-				<div>
-					author
-					<input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-				</div>
-				<div>
-					url for more info
-					<input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
-				</div>
+
+				content
+				<input {...contentField} />
+				<br />
+				author
+				<input {...authorField} />
+				<br />
+				url for more info
+				< input {...infoField} />
+				<br />
 				<button>create</button>
-			</form>
-		</div>
+			</form >
+		</div >
 	)
 
 }
