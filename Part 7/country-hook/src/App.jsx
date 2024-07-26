@@ -21,12 +21,6 @@ const useCountry = (name) => {
 
   useEffect(() => {
     if (name !== '') {
-      // async function fetchCountry() {
-      //   await axios
-      //     .get(`${baseUrl}/${name}`)
-      //     .then(res => { setCountry(res) })
-      // }
-      // fetchCountry(name)
       axios
         .get(`${baseUrl}/${name}`)
         .then(res => { setCountry(res) })
