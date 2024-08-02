@@ -1,105 +1,61 @@
-import { useState, useEffect } from "react";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import storage from '../services/storage'
 
-import blogService from "../services/blogs";
+const Blog = ({ blog, handleVote, handleDelete }) => {
+  const [visible, setVisible] = useState(false)
 
-import PropTypes from "prop-types";
+  const nameOfUser = blog.user ? blog.user.name : 'anonymous'
 
-const Blog = ({ blog, sortBlogs, deleteBlog, user }) => {
-  const [detailsVisibility, setDetailsVisibility] = useState(false);
-
-  const [blogUser, setBlogUser] = useState(null);
-  const [removeBtn, setRemoveBtn] = useState(false);
-
-  const [blogObject, setBlogObject] = useState({
-    user: blog.user,
-    likes: blog.likes,
-    author: blog.author,
-    title: blog.title,
-    url: blog.url,
-    id: blog.id,
-  });
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
+  const style = {
+    border: 'solid',
+    padding: 10,
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
-  useEffect(() => {
-    blogService.getUser(blog.user).then((user) => {
-      setBlogUser(user);
-    });
-  }, [blog.user]);
+  const canRemove = blog.user ? blog.user.username === storage.me() : true
 
-  const incrementLikes = async (blog) => {
-    const blogIncremented = {
-      user: blogObject.user,
-      likes: blogObject.likes + 1,
-      author: blogObject.author,
-      title: blogObject.title,
-      url: blogObject.url,
-    };
-    await blogService
-      .update(blogObject.id, blogIncremented)
-      .then((returnedObject) => setBlogObject(returnedObject));
-
-    sortBlogs();
-  };
-
-  useEffect(() => {
-    if (user && blogUser && user.name === blogUser.name) {
-      setRemoveBtn(true);
-    }
-    // would like to use the blog.user and user.id but user only stores the token, username and name, shall I implement this or is it a security risk ?
-  }, [blogUser, user]);
-
-  const BlogDetails = () => {};
+  console.log(blog.user, storage.me(), canRemove)
 
   return (
-    <div style={blogStyle} className="blogdiv">
-      <div className="blog-info">
-        {blogObject.title}, by {blogObject.author}
-      </div>
-      <button
-        name="view"
-        className="btn-show"
-        onClick={() => setDetailsVisibility(!detailsVisibility)}
-      >
-        {detailsVisibility ? "hide" : "view"}
+    <div style={style} className='blog'>
+      {blog.title} by {blog.author}
+      <button style={{ marginLeft: 3 }} onClick={() => setVisible(!visible)}>
+        {visible ? 'hide' : 'view'}
       </button>
-      {detailsVisibility ? (
+      {visible && (
         <div>
-          <p>blog ID : {blogObject.id}</p>
-          <p>Url : {blogObject.url}</p>
-          <p>
-            Likes : {blogObject.likes}
-            <button className={"likeBtn"} onClick={() => incrementLikes()}>
-              Like
-            </button>
-          </p>
-          <p>User : {blogUser.username}</p>
-          {removeBtn && (
+          <div><a href={blog.url}>{blog.url}</a></div>
+          <div>
+            likes {blog.likes}
             <button
-              style={{ backgroundColor: "red" }}
-              className="deleteBtn"
-              onClick={() => deleteBlog(blog)}
+              style={{ marginLeft: 3 }}
+              onClick={() => handleVote(blog)}
             >
-              remove
+              like
             </button>
-          )}
+          </div>
+          <div>{nameOfUser}</div>
+          {canRemove && <button onClick={() => handleDelete(blog)}>
+            remove
+          </button>}
         </div>
-      ) : null}
+      )}
+
     </div>
-  );
-};
+  )
+}
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-  sortBlogs: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-};
+  blog: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired,
+    user: PropTypes.object,
+  }).isRequired,
+  handleVote: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired
+}
 
-export default Blog;
+export default Blog

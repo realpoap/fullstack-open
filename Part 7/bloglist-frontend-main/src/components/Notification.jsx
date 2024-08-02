@@ -1,9 +1,24 @@
-const Notification = ({ message, type }) => {
-  if (message === null) {
-    return null;
-  } else {
-    return <div className={type}>{message}</div>;
+const Notification = ({ notification }) => {
+  if (!notification) {
+    return null
   }
-};
 
-export default Notification;
+  const { message, type } = notification
+
+  const style = {
+    backgroundColor: 'lightgrey',
+    margin: '10px',
+    padding: '10px',
+    border: '2px solid',
+    borderColor: type === 'success' ? 'green' : 'red',
+    borderRadius: '5px',
+  }
+
+  return (
+    <div style={style}>
+      {message}
+    </div>
+  )
+}
+
+export default Notification
