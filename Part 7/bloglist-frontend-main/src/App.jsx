@@ -11,21 +11,21 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
 import { setNotif, clearNotif } from './reducers/notificationReducer'
+import { createBlog, initializeBlogs, setBlogs } from './reducers/blogsReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  //
 
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
-  console.log(notification)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    dispatch(initializeBlogs())
   }, [])
+
+  const blogs = useSelector(state => state.blogs)
+  console.log(blogs)
+
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -55,9 +55,8 @@ const App = () => {
   }
 
   const handleCreate = async (blog) => {
-    const newBlog = await blogService.create(blog)
-    setBlogs(blogs.concat(newBlog))
-    notify(`Blog created: ${newBlog.title}, ${newBlog.author}`)
+    dispatch(createBlog(blog))
+    notify(`Blog created: ${Blog.title}, ${blog.author}`)
     blogFormRef.current.toggleVisibility()
   }
 
@@ -69,7 +68,7 @@ const App = () => {
     })
 
     notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`)
-    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
   }
 
   const handleLogout = () => {
@@ -78,13 +77,13 @@ const App = () => {
     notify(`Bye, ${user.name}!`)
   }
 
-  const handleDelete = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
-      notify(`Blog ${blog.title}, by ${blog.author} removed`)
-    }
-  }
+  // const handleDelete = async (blog) => {
+  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+  //     await blogService.remove(blog.id)
+  //     setBlogs(blogs.filter(b => b.id !== blog.id))
+  //     notify(`Blog ${blog.title}, by ${blog.author} removed`)
+  //   }
+  // }
 
   if (!user) {
     return (
@@ -111,12 +110,12 @@ const App = () => {
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <NewBlog doCreate={handleCreate} />
       </Togglable>
-      {blogs.sort(byLikes).map(blog =>
+      {[...blogs].sort(byLikes).map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
           handleVote={handleVote}
-          handleDelete={handleDelete}
+        //handleDelete={handleDelete}
         />
       )}
     </div>
