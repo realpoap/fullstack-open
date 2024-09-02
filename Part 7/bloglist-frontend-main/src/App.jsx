@@ -1,10 +1,12 @@
 import { useState, useEffect, createRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './services/storage'
 import Login from './components/Login'
+import Users from './components/Users'
+import Home from './components/Home'
 import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
@@ -92,29 +94,35 @@ const App = () => {
     )
   }
 
+  const blogUsers = [...new Set(blogs.map(b => b.user))]
+  console.log(blogUsers)
+
+
   const byLikes = (a, b) => b.likes - a.likes
+
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification notification={notification} />
       <div>
-        {users.name} logged in
-        <button onClick={handleLogout}>
-          logout
-        </button>
+        <Link to='/'>Home</Link>
+        <Link to='/users'>Users</Link>
       </div>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        <NewBlog doCreate={handleCreate} />
-      </Togglable>
-      {[...blogs].sort(byLikes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleVote={handleVote}
-          handleDelete={handleDelete}
-        />
-      )}
+
+      <div>
+        <h2>blogs</h2>
+        <Notification notification={notification} />
+        <div>
+          {users.name} logged in
+          <button onClick={handleLogout}>
+            logout
+          </button>
+        </div>
+        <Routes>
+          <Route path='/users' element={<Users users={blogUsers} />}></Route>
+          <Route path='/' element={<Home />}></Route>
+        </Routes>
+
+      </div>
     </div>
   )
 }
