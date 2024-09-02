@@ -1,6 +1,6 @@
 import { useState, useEffect, createRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Routes, Route, Link, useParams } from 'react-router-dom'
+import { Routes, Route, Link, useParams, useMatch } from 'react-router-dom'
 
 import loginService from './services/login'
 import userService from './services/users'
@@ -70,7 +70,7 @@ const App = () => {
 
   const handleCreate = async (blog) => {
     dispatch(createBlog(blog))
-    notify(`Blog created: ${blog.title}, ${blog.author}`) // doesn't notify
+    notify(`Blog created: ${blog.title}, ${blog.author}`)
     blogFormRef.current.toggleVisibility()
   }
 
@@ -98,18 +98,18 @@ const App = () => {
     }
   }
 
-  const { id } = useParams() // Get the id parameter directly
-  console.log('Params ID:', id) // Log the id parameter
-  console.log('UserList:', userList) // Log the userList contents
+  const userMatch = useMatch('/users/:id')
+  // console.log('userMatch id: ', String(userMatch.params.id))
+  // console.log('userList id: ', String(userList[0].id))
 
-  const u = userList.length > 0
-    ? userList.find((u) => {
-      console.log('Checking user:', u.id, 'with ID:', id) // Log the comparison
-      return Number(u.id) === Number(id)
-    })
+  const u = userMatch && userList > 0
+    ? userList.find(u => String(u.id) === String(userMatch.params.id))
     : null
-
   console.log('User found:', u) // Log the found user
+
+  // const blogMatch = useMatch('/blogs/:id')
+  // const b = blogMatch ? blogs.find(b => String(b.id) === String(blogMatch.params.id)) : null
+  // console.log('Blog found:', b) // Log the found user
 
   if (!users) {
     return (
@@ -140,6 +140,13 @@ const App = () => {
         </div>
         <Routes>
           <Route path='/users/:id' element={<User user={u} />} />
+          {/* <Route path='/blog/:id' element={
+            <Blog
+              key={b.id}
+              blog={b}
+              handleVote={handleVote}
+              handleDelete={handleDelete}
+            />} /> */}
           <Route path='/users' element={<Users users={userList} />} />
           <Route path='/' element={<Home />} />
         </Routes>
