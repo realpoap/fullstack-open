@@ -18,13 +18,13 @@ const App = () => {
 
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [])
 
-  const blogs = useSelector(state => state.blogs)
-  console.log(blogs)
+
 
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const App = () => {
 
   const handleCreate = async (blog) => {
     dispatch(createBlog(blog))
-    notify(`Blog created: ${Blog.title}, ${blog.author}`)
+    notify(`Blog created: ${blog.title}, ${blog.author}`) // doesn't notify
     blogFormRef.current.toggleVisibility()
   }
 
@@ -74,6 +74,7 @@ const App = () => {
   const handleLogout = () => {
     setUser(null)
     storage.removeUser()
+    console.log('byby user, now notifying...')
     notify(`Bye, ${user.name}!`)
   }
 
