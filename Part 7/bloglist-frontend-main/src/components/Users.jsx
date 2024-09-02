@@ -1,4 +1,4 @@
-import User from './User'
+import UserList from './UserList'
 
 const Users = ({ users }) => {
 
@@ -6,7 +6,7 @@ const Users = ({ users }) => {
 		<div>
 
 			<h1>Users</h1>
-			<User users={users} />
+			<UserList users={users} />
 		</div>
 	)
 }

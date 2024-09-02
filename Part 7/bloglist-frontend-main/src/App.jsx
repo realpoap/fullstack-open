@@ -1,6 +1,6 @@
 import { useState, useEffect, createRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Routes, Route, Link, useMatch } from 'react-router-dom'
+import { Routes, Route, Link, useParams } from 'react-router-dom'
 
 import loginService from './services/login'
 import userService from './services/users'
@@ -16,6 +16,7 @@ import Togglable from './components/Togglable'
 import { setNotif, clearNotif } from './reducers/notificationReducer'
 import { createBlog, deleteBlog, initializeBlogs, updateBlog } from './reducers/blogsReducer'
 import { saveUser, forgetUser } from './reducers/usersReducer'
+import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -38,7 +39,11 @@ const App = () => {
 
   useEffect(() => {
     userService.getAll()
-      .then(users => setUserList(users))
+      .then(users => {
+        setUserList(users)
+        console.log('UserList:', users) // Verify the structure and content of userList
+      })
+      .catch(error => console.error('Error fetching users:', error))
   }, [])
 
 
@@ -93,6 +98,19 @@ const App = () => {
     }
   }
 
+  const { id } = useParams() // Get the id parameter directly
+  console.log('Params ID:', id) // Log the id parameter
+  console.log('UserList:', userList) // Log the userList contents
+
+  const u = userList.length > 0
+    ? userList.find((u) => {
+      console.log('Checking user:', u.id, 'with ID:', id) // Log the comparison
+      return Number(u.id) === Number(id)
+    })
+    : null
+
+  console.log('User found:', u) // Log the found user
+
   if (!users) {
     return (
       <div>
@@ -121,8 +139,9 @@ const App = () => {
           </button>
         </div>
         <Routes>
-          <Route path='/users' element={<Users users={userList} />}></Route>
-          <Route path='/' element={<Home />}></Route>
+          <Route path='/users/:id' element={<User user={u} />} />
+          <Route path='/users' element={<Users users={userList} />} />
+          <Route path='/' element={<Home />} />
         </Routes>
 
       </div>
