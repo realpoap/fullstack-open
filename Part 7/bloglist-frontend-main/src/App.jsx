@@ -11,7 +11,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
 import { setNotif, clearNotif } from './reducers/notificationReducer'
-import { createBlog, initializeBlogs, updateBlog } from './reducers/blogsReducer'
+import { createBlog, deleteBlog, initializeBlogs, updateBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -23,8 +23,6 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [])
-
-
 
 
   useEffect(() => {
@@ -68,7 +66,6 @@ const App = () => {
     }
     dispatch(updateBlog(newBlog))
     notify(`You liked ${newBlog.title} by ${newBlog.author}`)
-    //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
   }
 
   const handleLogout = () => {
@@ -78,13 +75,12 @@ const App = () => {
     notify(`Bye, ${user.name}!`)
   }
 
-  // const handleDelete = async (blog) => {
-  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-  //     await blogService.remove(blog.id)
-  //     setBlogs(blogs.filter(b => b.id !== blog.id))
-  //     notify(`Blog ${blog.title}, by ${blog.author} removed`)
-  //   }
-  // }
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      dispatch(deleteBlog(blog))
+      notify(`Blog ${blog.title}, by ${blog.author} removed`)
+    }
+  }
 
   if (!user) {
     return (
@@ -116,7 +112,7 @@ const App = () => {
           key={blog.id}
           blog={blog}
           handleVote={handleVote}
-        //handleDelete={handleDelete}
+          handleDelete={handleDelete}
         />
       )}
     </div>
