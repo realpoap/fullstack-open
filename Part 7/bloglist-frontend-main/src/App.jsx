@@ -11,7 +11,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
 import { setNotif, clearNotif } from './reducers/notificationReducer'
-import { createBlog, initializeBlogs, setBlogs } from './reducers/blogsReducer'
+import { createBlog, initializeBlogs, updateBlog } from './reducers/blogsReducer'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -62,12 +62,12 @@ const App = () => {
 
   const handleVote = async (blog) => {
     console.log('updating', blog)
-    const updatedBlog = await blogService.update(blog.id, {
+    const newBlog = {
       ...blog,
       likes: blog.likes + 1
-    })
-
-    notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`)
+    }
+    dispatch(updateBlog(newBlog))
+    notify(`You liked ${newBlog.title} by ${newBlog.author}`)
     //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
   }
 
