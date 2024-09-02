@@ -17,7 +17,7 @@ const blogSlice = createSlice({
 		replaceBlog(state, action) {
 			state.map(b => b.id !== action.payload.id ? b : action.payload)
 		}
-	},
+	}
 })
 
 export const { setBlogs, appendBlog, replaceBlog, removeBlog } = blogSlice.actions

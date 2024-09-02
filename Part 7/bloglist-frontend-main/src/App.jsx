@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Routes, Route, Link, useMatch } from 'react-router-dom'
 
 import loginService from './services/login'
+import userService from './services/users'
 import storage from './services/storage'
 import Login from './components/Login'
 import Users from './components/Users'
@@ -21,6 +22,7 @@ const App = () => {
   const notification = useSelector(state => state.notification)
   const blogs = useSelector(state => state.blogs)
   const users = useSelector(state => state.users)
+  const [userList, setUserList] = useState([])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -33,6 +35,13 @@ const App = () => {
       dispatch(saveUser(user))
     }
   }, [dispatch])
+
+  useEffect(() => {
+    userService.getAll()
+      .then(users => setUserList(users))
+  }, [])
+
+
 
   const blogFormRef = createRef()
 
@@ -94,12 +103,6 @@ const App = () => {
     )
   }
 
-  const blogUsers = [...new Set(blogs.map(b => b.user))]
-  console.log(blogUsers)
-
-
-  const byLikes = (a, b) => b.likes - a.likes
-
 
   return (
     <div>
@@ -118,7 +121,7 @@ const App = () => {
           </button>
         </div>
         <Routes>
-          <Route path='/users' element={<Users users={blogUsers} />}></Route>
+          <Route path='/users' element={<Users users={userList} />}></Route>
           <Route path='/' element={<Home />}></Route>
         </Routes>
 

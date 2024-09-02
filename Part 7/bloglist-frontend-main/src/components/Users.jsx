@@ -1,6 +1,7 @@
 import User from './User'
 
 const Users = ({ users }) => {
+
 	return (
 		<div>
 
