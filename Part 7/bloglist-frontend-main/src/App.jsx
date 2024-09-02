@@ -12,25 +12,25 @@ import Togglable from './components/Togglable'
 
 import { setNotif, clearNotif } from './reducers/notificationReducer'
 import { createBlog, deleteBlog, initializeBlogs, updateBlog } from './reducers/blogsReducer'
+import { saveUser, forgetUser } from './reducers/usersReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
-
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
   const blogs = useSelector(state => state.blogs)
+  const users = useSelector(state => state.users)
 
   useEffect(() => {
     dispatch(initializeBlogs())
-  }, [])
+  }, [dispatch])
 
 
   useEffect(() => {
     const user = storage.loadUser()
     if (user) {
-      setUser(user)
+      dispatch(saveUser(user))
     }
-  }, [])
+  }, [dispatch])
 
   const blogFormRef = createRef()
 
@@ -44,7 +44,7 @@ const App = () => {
   const handleLogin = async (credentials) => {
     try {
       const user = await loginService.login(credentials)
-      setUser(user)
+      dispatch(saveUser(user))
       storage.saveUser(user)
       notify(`Welcome back, ${user.name}`)
     } catch (error) {
@@ -69,10 +69,10 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
+    notify(`Bye, ${users.name}!`)
+    dispatch(forgetUser())
     storage.removeUser()
     console.log('byby user, now notifying...')
-    notify(`Bye, ${user.name}!`)
   }
 
   const handleDelete = async (blog) => {
@@ -82,7 +82,7 @@ const App = () => {
     }
   }
 
-  if (!user) {
+  if (!users) {
     return (
       <div>
         <h2>blogs</h2>
@@ -99,7 +99,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification notification={notification} />
       <div>
-        {user.name} logged in
+        {users.name} logged in
         <button onClick={handleLogout}>
           logout
         </button>
