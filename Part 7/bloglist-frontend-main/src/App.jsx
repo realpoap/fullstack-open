@@ -133,18 +133,19 @@ export default function App() {
 
 	return (
 		<div>
-			<div>
+			<nav>
 				<Link to="/">Home</Link>
 				<Link to="/users">Users</Link>
-			</div>
-
-			<div>
-				<h2>blogs</h2>
-				<Notification notification={notification} />
 				<div>
 					{users.name} logged in
 					<button onClick={handleLogout}>logout</button>
 				</div>
+			</nav>
+
+			<div>
+				<h2>blogs</h2>
+				<Notification notification={notification} />
+
 				<Routes>
 					<Route path="/users/:id" element={<User user={user} />} />
 					<Route path="/blogs/:id" element={<Blog
