@@ -8,19 +8,23 @@ const Home = ({ blogFormRef, handleVote, handleDelete, handleCreate }) => {
 	const blogs = useSelector(state => state.blogs)
 	return (
 		<div>
+			<h1>Blogs List</h1>
 			<Togglable buttonLabel='create new blog' ref={blogFormRef}>
 				<NewBlog doCreate={handleCreate} />
 			</Togglable>
-			{
-				[...blogs].map(blog =>
-					<Blog
-						key={blog.id}
-						blog={blog}
-						handleVote={handleVote}
-						handleDelete={handleDelete}
-					/>
-				)
-			}
+			<ul>
+				{
+					[...blogs].map(blog =>
+						<li key={blog.id}><Blog
+
+							blog={blog}
+							handleVote={handleVote}
+							handleDelete={handleDelete}
+						/></li>
+					)
+				}
+			</ul>
+
 		</div>
 	)
 

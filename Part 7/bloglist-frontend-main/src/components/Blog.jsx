@@ -19,23 +19,22 @@ const Blog = ({ blog, handleVote, handleDelete }) => {
   console.log(blog.user, storage.me(), canRemove)
 
   return (
-    <div style={style} className='blog'>
-      {blog.title} by {blog.author}
-      <button style={{ marginLeft: 3 }} onClick={() => setVisible(!visible)}>
+    <div>
+      <div>{blog.title} by {blog.author}</div>
+      <div><a href={blog.url}>{blog.url}</a></div>
+      <div>likes : {blog.likes}</div>
+      <button onClick={() => setVisible(!visible)}>
         {visible ? 'hide' : 'view'}
       </button>
       {visible && (
         <div>
-          <div><a href={blog.url}>{blog.url}</a></div>
-          <div>
-            likes {blog.likes}
-            <button
-              style={{ marginLeft: 3 }}
-              onClick={() => handleVote(blog)}
-            >
-              like
-            </button>
-          </div>
+
+          <button
+            onClick={() => handleVote(blog)}
+          >
+            like
+          </button>
+
           <div>{nameOfUser}</div>
           {canRemove && <button onClick={() => handleDelete(blog)}>
             remove

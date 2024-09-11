@@ -53,13 +53,21 @@ export default function App() {
 			.catch(error => console.error('Error fetching users:', error))
 	}, [])
 
-	const match = useMatch('/users/:id')
+	const userMatch = useMatch('/users/:id')
 
-	const user = match
-		? userList.find((u) => String(u.id) === String(match.params.id))
+	const user = userMatch
+		? userList.find((u) => String(u.id) === String(userMatch.params.id))
 		: null
 
-	console.log({ match, userList, user })
+	console.log({ userMatch, userList, user })
+
+	const blogMatch = useMatch('/blogs/:id')
+
+	const blog = blogMatch
+		? blogs.find((u) => String(u.id) === String(blogMatch.params.id))
+		: null
+
+	console.log({ blogMatch, blogs, user })
 
 
 	const blogFormRef = createRef()
@@ -139,6 +147,11 @@ export default function App() {
 				</div>
 				<Routes>
 					<Route path="/users/:id" element={<User user={user} />} />
+					<Route path="/blogs/:id" element={<Blog
+						blog={blog}
+						handleVote={handleVote}
+						handleDelete={handleDelete}
+					/>} />
 					<Route path="/users" element={<Users users={userList} />} />
 					<Route path="/" element={<Home
 						blogFormRef={blogFormRef}
