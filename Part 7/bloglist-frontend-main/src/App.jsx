@@ -23,6 +23,7 @@ import { createBlog, deleteBlog, initializeBlogs, updateBlog } from './reducers/
 import { saveUser, forgetUser } from './reducers/usersReducer'
 
 
+
 export default function App() {
 	const dispatch = useDispatch()
 	const notification = useSelector(state => state.notification)
@@ -94,6 +95,24 @@ export default function App() {
 		blogFormRef.current.toggleVisibility()
 	}
 
+	const handleVote = async (blog) => {
+		console.log('updating', blog)
+		const newBlog = {
+			...blog,
+			likes: blog.likes + 1
+		}
+		dispatch(updateBlog(newBlog))
+		notify(`You liked ${newBlog.title} by ${newBlog.author}`)
+	}
+
+
+	const handleDelete = async (blog) => {
+		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+			dispatch(deleteBlog(blog))
+			notify(`Blog ${blog.title}, by ${blog.author} removed`)
+		}
+	}
+
 	if (!users) {
 		return (
 			<div>
@@ -121,7 +140,12 @@ export default function App() {
 				<Routes>
 					<Route path="/users/:id" element={<User user={user} />} />
 					<Route path="/users" element={<Users users={userList} />} />
-					<Route path="/" element={<Home />} />
+					<Route path="/" element={<Home
+						blogFormRef={blogFormRef}
+						handleCreate={handleCreate}
+						handleVote={handleVote}
+						handleDelete={handleDelete}
+					/>} />
 				</Routes>
 			</div>
 		</div>

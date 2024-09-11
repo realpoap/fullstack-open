@@ -1,24 +1,29 @@
-import Togglable from './Togglable'
+import { useSelector } from 'react-redux'
 
-const Home = () => {
+import Togglable from './Togglable'
+import NewBlog from './NewBlog'
+import Blog from './Blog'
+
+const Home = ({ blogFormRef, handleVote, handleDelete, handleCreate }) => {
+	const blogs = useSelector(state => state.blogs)
 	return (
 		<div>
-			Home view
+			<Togglable buttonLabel='create new blog' ref={blogFormRef}>
+				<NewBlog doCreate={handleCreate} />
+			</Togglable>
+			{
+				[...blogs].map(blog =>
+					<Blog
+						key={blog.id}
+						blog={blog}
+						handleVote={handleVote}
+						handleDelete={handleDelete}
+					/>
+				)
+			}
 		</div>
 	)
-		< Togglable Togglable buttonLabel = 'create new blog' ref = { blogFormRef } >
-			<NewBlog doCreate={handleCreate} />
-	</ >
-{
-	[...blogs].sort(byLikes).map(blog =>
-		<Blog
-			key={blog.id}
-			blog={blog}
-			handleVote={handleVote}
-			handleDelete={handleDelete}
-		/>
-	)
-}
+
 }
 
 export default Home
