@@ -35,14 +35,15 @@ router.post('/', userExtractor, async (request, response) => {
 })
 
 router.post('/:id/comments', async (request, response) => {
-  const comment = request.body
+  const content = request.body
+  console.log('CONTROLLER POST COMMENT content :', content)
 
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
     return response.status(204).end()
   }
 
-  blog.comments.push(comment)
+  blog.comments.push(content)
   const updatedBlog = await blog.save()
 
   response.status(201).json(updatedBlog)

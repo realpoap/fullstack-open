@@ -2,16 +2,29 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import storage from '../services/storage'
 
-const Blog = ({ blog, handleVote, handleDelete }) => {
+const Blog = ({ blog, handleVote, handleDelete, handlePostComment }) => {
+
   const [visible, setVisible] = useState(false)
+  const [comment, setComment] = useState('')
 
   const nameOfUser = blog.user ? blog.user.name : 'anonymous'
+  const comments = blog.comments
 
   const canRemove = blog.user ? blog.user.username === storage.me() : true
 
   console.log(blog.user, storage.me(), canRemove)
 
-  const comments = blog.comments
+  const handleCommentChange = (event) => {
+    setComment(event.target.value)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    handlePostComment(blog.id, comment)
+    setComment('')
+  }
+
+
 
   return (
     <div>
@@ -26,8 +39,7 @@ const Blog = ({ blog, handleVote, handleDelete }) => {
         <div>
 
           <button
-            onClick={() => handleVote(blog)}
-          >
+            onClick={() => handleVote(blog)}>
             like
           </button>
 
@@ -39,6 +51,14 @@ const Blog = ({ blog, handleVote, handleDelete }) => {
       )}
       <div>
         <h3>Comments :</h3>
+        <form onSubmit={handleSubmit}>
+          <input
+            type='text'
+            value={comment}
+            onChange={handleCommentChange}
+          />
+          <button type='submit'>Comment</button>
+        </form>
         <ul>
           {[...comments].map(c =>
             <li key={c.id}>{c.content}</li>

@@ -47,11 +47,18 @@ export const updateBlog = content => {
 
 export const deleteBlog = (content) => {
 	return async dispatch => {
-		console.log('content.id', content.id)
+		console.log('REMOVE content.id', content.id)
 		const blog = await blogs.remove(content.id)
 		dispatch(removeBlog(blog))
 	}
 }
 
+export const createComment = (id, content) => {
+	return async () => {
+		console.log('REDUCER COMMENT content :', content)
+
+		await blogs.addComment(id, content)
+	}
+}
 
 export default blogSlice.reducer

@@ -19,8 +19,9 @@ import NewBlog from './components/NewBlog'
 
 
 import { setNotif, clearNotif } from './reducers/notificationReducer'
-import { createBlog, deleteBlog, initializeBlogs, updateBlog } from './reducers/blogsReducer'
+import { createBlog, deleteBlog, initializeBlogs, updateBlog, createComment } from './reducers/blogsReducer'
 import { saveUser, forgetUser } from './reducers/usersReducer'
+
 
 
 
@@ -121,6 +122,14 @@ export default function App() {
 		}
 	}
 
+	const handlePostComment = async (id, content) => {
+		console.log('POST COMMENT content : ', content)
+
+		dispatch(createComment(id, content))
+		notify(`Comment added : ${content}`)
+	}
+
+
 	if (!users) {
 		return (
 			<div>
@@ -159,6 +168,7 @@ export default function App() {
 						handleCreate={handleCreate}
 						handleVote={handleVote}
 						handleDelete={handleDelete}
+						handlePostComment={handlePostComment}
 					/>} />
 				</Routes>
 			</div>

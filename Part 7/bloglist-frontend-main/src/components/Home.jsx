@@ -4,7 +4,7 @@ import Togglable from './Togglable'
 import NewBlog from './NewBlog'
 import Blog from './Blog'
 
-const Home = ({ blogFormRef, handleVote, handleDelete, handleCreate }) => {
+const Home = ({ blogFormRef, handleVote, handleDelete, handleCreate, handlePostComment }) => {
 	const blogs = useSelector(state => state.blogs)
 	return (
 		<div>
@@ -16,10 +16,10 @@ const Home = ({ blogFormRef, handleVote, handleDelete, handleCreate }) => {
 				{
 					[...blogs].map(blog =>
 						<li key={blog.id}><Blog
-
 							blog={blog}
 							handleVote={handleVote}
 							handleDelete={handleDelete}
+							handlePostComment={handlePostComment}
 						/></li>
 					)
 				}
