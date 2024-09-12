@@ -7,24 +7,20 @@ const Blog = ({ blog, handleVote, handleDelete }) => {
 
   const nameOfUser = blog.user ? blog.user.name : 'anonymous'
 
-  const style = {
-    border: 'solid',
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   const canRemove = blog.user ? blog.user.username === storage.me() : true
 
   console.log(blog.user, storage.me(), canRemove)
+
+  const comments = blog.comments
 
   return (
     <div>
       <div>{blog.title} by {blog.author}</div>
       <div><a href={blog.url}>{blog.url}</a></div>
       <div>likes : {blog.likes}</div>
+
       <button onClick={() => setVisible(!visible)}>
-        {visible ? 'hide' : 'view'}
+        {visible ? 'close options' : 'options'}
       </button>
       {visible && (
         <div>
@@ -41,6 +37,14 @@ const Blog = ({ blog, handleVote, handleDelete }) => {
           </button>}
         </div>
       )}
+      <div>
+        <h3>Comments :</h3>
+        <ul>
+          {[...comments].map(c =>
+            <li key={c.id}>{c.content}</li>
+          )}
+        </ul>
+      </div>
 
     </div>
   )

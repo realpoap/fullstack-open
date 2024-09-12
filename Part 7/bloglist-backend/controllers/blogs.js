@@ -23,6 +23,7 @@ router.post('/', userExtractor, async (request, response) => {
   }
 
   blog.likes = blog.likes | 0
+  blog.comments = []
   blog.user = user
   user.blogs = user.blogs.concat(blog._id)
 
@@ -31,6 +32,20 @@ router.post('/', userExtractor, async (request, response) => {
   const savedBlog = await blog.save()
 
   response.status(201).json(savedBlog)
+})
+
+router.post('/:id/comments', async (request, response) => {
+  const comment = request.body
+
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    return response.status(204).end()
+  }
+
+  blog.comments.push(comment)
+  const updatedBlog = await blog.save()
+
+  response.status(201).json(updatedBlog)
 })
 
 router.delete('/:id', userExtractor, async (request, response) => {
@@ -61,7 +76,7 @@ router.put('/:id', async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { username: 1, name: 1 })
