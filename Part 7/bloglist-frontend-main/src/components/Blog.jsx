@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import storage from '../services/storage'
 
+import { List, ListItem, ListItemText, Button, Typography, TextField } from '@mui/material'
+
 const Blog = ({ blog, handleVote, handleDelete, handlePostComment }) => {
 
   const [visible, setVisible] = useState(false)
@@ -28,42 +30,53 @@ const Blog = ({ blog, handleVote, handleDelete, handlePostComment }) => {
 
   return (
     <div>
-      <div>{blog.title} by {blog.author}</div>
-      <div><a href={blog.url}>{blog.url}</a></div>
-      <div>likes : {blog.likes}</div>
+      <Typography variant='h4'> {blog.title} by {blog.author}</Typography>
+      <Typography variant='body1'><a href={blog.url}>{blog.url}</a></Typography>
+      <Typography variant='body1'>Likes : {blog.likes}</Typography>
+      <Button
+        size='small'
+        variant='contained'
+        color='disabled'
+        onClick={() => handleVote(blog)}>
+        Like !
+      </Button>
 
-      <button onClick={() => setVisible(!visible)}>
+      <Button onClick={() => setVisible(!visible)}>
         {visible ? 'close options' : 'options'}
-      </button>
+      </Button>
       {visible && (
         <div>
 
-          <button
-            onClick={() => handleVote(blog)}>
-            like
-          </button>
+          <div>
+            <Typography variant='caption'>{nameOfUser}</Typography>
 
-          <div>{nameOfUser}</div>
-          {canRemove && <button onClick={() => handleDelete(blog)}>
-            remove
-          </button>}
+            {canRemove && <Button size='small' color='secondary' onClick={() => handleDelete(blog)}>
+              remove
+            </Button>}
+          </div>
         </div>
       )}
       <div>
-        <h3>Comments :</h3>
+        <Typography variant='h6'>Comments :</Typography>
         <form onSubmit={handleSubmit}>
-          <input
+          <TextField
+            multiline
             type='text'
             value={comment}
+            variant='standard'
             onChange={handleCommentChange}
           />
-          <button type='submit'>Comment</button>
+          <Button color='disabled' variant='contained' type='submit'>Comment</Button>
         </form>
-        <ul>
+        <List dense='dense'>
           {[...comments].map(c =>
-            <li key={c.id}>{c.content}</li>
+            <ListItem key={c.id}>
+              <ListItemText>
+                {c.content}
+              </ListItemText>
+            </ListItem>
           )}
-        </ul>
+        </List>
       </div>
 
     </div>

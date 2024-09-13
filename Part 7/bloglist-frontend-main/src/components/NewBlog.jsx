@@ -1,3 +1,4 @@
+import { Button, FormLabel, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 
 const NewBlog = ({ doCreate }) => {
@@ -27,36 +28,42 @@ const NewBlog = ({ doCreate }) => {
 
 	return (
 		<div>
-			<h2>Create a New Blog</h2>
+			<Typography variant='h6'>Create a New Blog</Typography>
 			<form onSubmit={handleSubmit}>
 				<div>
-					<label>Title:</label>
-					<input
+					<FormLabel>Title:</FormLabel>
+					<TextField
 						type="text"
 						data-testid='title'
 						value={title}
+						size='small'
+						variant='standard'
 						onChange={handleTitleChange}
 					/>
 				</div>
 				<div>
-					<label>URL:</label>
-					<input
+					<FormLabel>URL:</FormLabel>
+					<TextField
 						type="text"
 						data-testid='url'
 						value={url}
+						size='small'
+						variant='standard'
 						onChange={handleUrlChange}
 					/>
 				</div>
 				<div>
-					<label>Author:</label>
-					<input
+					<FormLabel>Author:</FormLabel>
+					<TextField
 						type="text"
 						data-testid='author'
 						value={author}
+						size='small'
+						variant='standard'
 						onChange={handleAuthorChange}
 					/>
 				</div>
-				<button type="submit">Create</button>
+				<Button variant='contained' type="submit">Create</Button>
 			</form>
 		</div>
 	)

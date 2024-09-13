@@ -2,6 +2,7 @@
 import { useState, useEffect, createRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Routes, Route, Link, useParams, useMatch } from 'react-router-dom'
+import { Typography, Button, AppBar, Container, Toolbar } from '@mui/material'
 
 import loginService from './services/login'
 import userService from './services/users'
@@ -24,8 +25,7 @@ import { saveUser, forgetUser } from './reducers/usersReducer'
 
 
 
-
-export default function App() {
+const App = () => {
 	const dispatch = useDispatch()
 	const notification = useSelector(state => state.notification)
 	const blogs = useSelector(state => state.blogs)
@@ -100,7 +100,7 @@ export default function App() {
 
 	const handleCreate = async (blog) => {
 		dispatch(createBlog(blog))
-		notify(`Blog created: ${blog.title}, ${blog.author}`)
+		notify(`Blog created: ${blog.title}, ${blog.author}`, 'info')
 		blogFormRef.current.toggleVisibility()
 	}
 
@@ -111,7 +111,7 @@ export default function App() {
 			likes: blog.likes + 1
 		}
 		dispatch(updateBlog(newBlog))
-		notify(`You liked ${newBlog.title} by ${newBlog.author}`)
+		notify(`You liked ${newBlog.title} by ${newBlog.author}`, 'info')
 	}
 
 
@@ -126,33 +126,38 @@ export default function App() {
 		console.log('POST COMMENT content : ', content)
 
 		dispatch(createComment(id, content))
-		notify(`Comment added : ${content}`)
+		notify(`Comment added : ${content}`, 'info')
 	}
 
 
 	if (!users) {
 		return (
-			<div>
-				<h2>blogs</h2>
-				<Notification notification={notification} />
-				<Login doLogin={handleLogin} />
-			</div>
+
+			<Container>
+				<div>
+					<Typography variant="h3">Blogs</Typography>
+					<Notification notification={notification} />
+					<Login doLogin={handleLogin} />
+				</div>
+			</Container>
 		)
 	}
 
 	return (
-		<div>
-			<nav>
-				<Link to="/">Home</Link>
-				<Link to="/users">Users</Link>
-				<div>
-					{users.name} logged in
-					<button onClick={handleLogout}>logout</button>
-				</div>
-			</nav>
+		<Container >
+			<AppBar position='static' color='primary'>
+				<Toolbar>
+					<Button color='disabled' component={Link} to="/">Home</Button>
+					<Button color='disabled' component={Link} to="/users">Users</Button>
+					<Typography variant='button'>
+						{users.name} logged in
+					</Typography>
+					<Button color='disabled' onClick={handleLogout}>Logout</Button>
+				</Toolbar>
+			</AppBar>
 
 			<div>
-				<h2>blogs</h2>
+				<Typography variant="h3">Blogs</Typography>
 				<Notification notification={notification} />
 
 				<Routes>
@@ -172,6 +177,9 @@ export default function App() {
 					/>} />
 				</Routes>
 			</div>
-		</div>
+		</Container>
 	)
 }
+
+
+export default App

@@ -1,3 +1,4 @@
+import { Button, FormControl, TextField } from '@mui/material'
 import { useState } from 'react'
 
 const Login = ({ doLogin }) => {
@@ -13,24 +14,31 @@ const Login = ({ doLogin }) => {
 
   return (
     <form onSubmit={handleLogin}>
-      <label>
-        Username:
-        <input
-          type="text"
-          data-testid='username'
-          value={username}
-          onChange={(e) => setUsername(e.target.value)} />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          data-testid='password'
-          onChange={(e) => setPassword(e.target.value)} />
-      </label>
-      <input type="submit" value="Login" />
-    </form>
+      <TextField
+        required
+        label='Username'
+        type="text"
+        variant='standard'
+        data-testid='username'
+        margin='none'
+        size='small'
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <TextField
+        required
+        label="Password"
+        type="password"
+        variant="standard"
+        value={password}
+        data-testid='password'
+        margin='none'
+        size='small'
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <Button variant='contained' type='submit' size='small'
+      >Login</Button>
+    </ form>
   )
 }
 

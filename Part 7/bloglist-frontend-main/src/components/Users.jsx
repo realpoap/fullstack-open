@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material'
 import UserList from './UserList'
 
 const Users = ({ users }) => {
@@ -5,7 +6,7 @@ const Users = ({ users }) => {
 	return (
 		<div>
 
-			<h1>Users</h1>
+			<Typography variant='h4'>Users</Typography>
 			<UserList users={users} />
 		</div>
 	)

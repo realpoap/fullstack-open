@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux'
 import Togglable from './Togglable'
 import NewBlog from './NewBlog'
 import Blog from './Blog'
+import { Typography } from '@mui/material'
 
 const Home = ({ blogFormRef, handleVote, handleDelete, handleCreate, handlePostComment }) => {
 	const blogs = useSelector(state => state.blogs)
 	return (
 		<div>
-			<h1>Blogs List</h1>
+			<Typography variant='h4'>Blogs List</Typography>
 			<Togglable buttonLabel='create new blog' ref={blogFormRef}>
 				<NewBlog doCreate={handleCreate} />
 			</Togglable>
