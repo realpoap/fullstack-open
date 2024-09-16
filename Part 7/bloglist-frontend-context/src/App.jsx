@@ -1,6 +1,7 @@
-import { useState, useEffect, createRef } from 'react'
+import { useState, useEffect, createRef, useReducer } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+
+import { getBlogs, createBlog } from './services/requests'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,11 +12,26 @@ import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
-import { getBlogs, createBlog } from './services/requests'
+
+
+const notifyReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET':
+      return action.payload
+    case 'CLEAR':
+      return ''
+    default:
+      return state
+  }
+}
+
+
 
 const App = () => {
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  // const [notification, setNotification] = useState(null)
+
+  const [notification, notificationDispatch] = useReducer(notifyReducer, null)
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -41,12 +57,19 @@ const App = () => {
 
 
 
+
   const blogFormRef = createRef()
 
   const notify = (message, type = 'success') => {
-    setNotification({ message, type })
+    const messageObject = {
+      message: message,
+      type: type
+    }
+    notificationDispatch({ type: 'SET', payload: messageObject })
+    console.log('Notification', notification)
+
     setTimeout(() => {
-      setNotification(null)
+      notificationDispatch({ type: 'CLEAR' })
     }, 5000)
   }
 
