@@ -1,9 +1,9 @@
-import { useState, useEffect, createRef, useReducer } from 'react'
+import { useState, useEffect, createRef, useReducer, useContext } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getBlogs, createBlog, updateBlog, deleteBlog } from './services/requests'
+import UserContext from './userContext'
 
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './services/storage'
 import Login from './components/Login'
@@ -11,8 +11,6 @@ import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-
-
 
 const notifyReducer = (state, action) => {
   switch (action.type) {
@@ -26,20 +24,26 @@ const notifyReducer = (state, action) => {
 }
 
 
-
 const App = () => {
   const queryClient = useQueryClient()
-  const [user, setUser] = useState(null)
-  // const [notification, setNotification] = useState(null)
+  //const [user, setUser] = useState(null)
+  const [user, userDispatch] = useContext(UserContext)
 
   const [notification, notificationDispatch] = useReducer(notifyReducer, null)
 
   useEffect(() => {
     const user = storage.loadUser()
     if (user) {
-      setUser(user)
+      //setUser(user)
+      userDispatch({ type: 'SET' })
     }
-  }, [])
+  }, [userDispatch])
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs,
+    refetchOnWindowFocus: false,
+  })
 
   const newBlogMutation = useMutation({
     mutationFn: createBlog,
@@ -62,10 +66,6 @@ const App = () => {
     }
   })
 
-  const result = useQuery({
-    queryKey: ['blogs'],
-    queryFn: getBlogs
-  })
 
   //console.log('blogs after query', JSON.parse(JSON.stringify(result)))
 
@@ -93,9 +93,8 @@ const App = () => {
 
   const handleLogin = async (credentials) => {
     try {
-      const user = await loginService.login(credentials)
-      setUser(user)
-      storage.saveUser(user)
+      const loginUser = await loginService.login(credentials)
+      userDispatch({ type: 'SET', user: loginUser })
       notify(`Welcome back, ${user.name}`)
     } catch (error) {
       notify('Wrong credentials', 'error')
@@ -120,9 +119,8 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    storage.removeUser()
     notify(`Bye, ${user.name}!`)
+    userDispatch({ type: 'REMOVE' })
   }
 
   const handleDelete = async (blog) => {
@@ -132,7 +130,7 @@ const App = () => {
     }
   }
 
-  if (!user) {
+  if (user === null) {
     return (
       <div>
         <h2>blogs</h2>
@@ -146,7 +144,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
       <Notification notification={notification} />
       <div>
         {user.name} logged in
