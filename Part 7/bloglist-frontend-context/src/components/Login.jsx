@@ -1,3 +1,4 @@
+import { TextInput, Button } from '@mantine/core'
 import { useState } from 'react'
 
 const Login = ({ doLogin }) => {
@@ -13,23 +14,22 @@ const Login = ({ doLogin }) => {
 
   return (
     <form onSubmit={handleLogin}>
-      <label>
-        Username:
-        <input
-          type="text"
-          data-testid='username'
-          value={username}
-          onChange={(e) => setUsername(e.target.value)} />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          data-testid='password'
-          onChange={(e) => setPassword(e.target.value)} />
-      </label>
-      <input type="submit" value="Login" />
+      <TextInput
+        type="text"
+        data-testid='username'
+        value={username}
+        label='Username'
+        onChange={(e) => setUsername(e.target.value)}
+        mb="md" />
+
+      <TextInput
+        type="password"
+        value={password}
+        label='Password'
+        data-testid='password'
+        onChange={(e) => setPassword(e.target.value)}
+        mb="md" />
+      <Button type="submit" value="Login">Login</Button>
     </form>
   )
 }

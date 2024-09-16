@@ -1,4 +1,4 @@
-import { useState, useEffect, createRef, useReducer, useContext } from 'react'
+import { useEffect, createRef, useReducer, useContext } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getBlogs, createBlog, updateBlog, deleteBlog } from './services/requests'
@@ -11,6 +11,7 @@ import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { Center } from '@mantine/core'
 
 const notifyReducer = (state, action) => {
   switch (action.type) {
@@ -34,7 +35,6 @@ const App = () => {
   useEffect(() => {
     const user = storage.loadUser()
     if (user) {
-      //setUser(user)
       userDispatch({ type: 'SET' })
     }
   }, [userDispatch])
@@ -132,26 +132,30 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
-        <h2>blogs</h2>
-        <Notification notification={notification} />
-        <Login doLogin={handleLogin} />
-      </div>
+      <>
+        <h1>Blogs</h1>
+        <Center>
+          <Notification notification={notification} />
+          <Login doLogin={handleLogin} />
+        </Center>
+      </>
     )
   }
 
   const byLikes = (a, b) => b.likes - a.likes
 
   return (
-    <div>
-      <h2>Blogs</h2>
-      <Notification notification={notification} />
-      <div>
-        {user.name} logged in
-        <button onClick={handleLogout}>
-          logout
-        </button>
-      </div>
+    <>
+      <Center>
+        <h1>Blogs</h1>
+        <Notification notification={notification} />
+        <div>
+          {user.name} logged in
+          <button onClick={handleLogout}>
+            logout
+          </button>
+        </div>
+      </Center>
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <NewBlog doCreate={handleCreate} />
       </Togglable>
@@ -163,7 +167,7 @@ const App = () => {
           handleDelete={handleDelete}
         />
       )}
-    </div>
+    </>
   )
 }
 
