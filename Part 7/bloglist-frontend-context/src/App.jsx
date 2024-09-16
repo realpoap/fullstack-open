@@ -1,4 +1,6 @@
 import { useState, useEffect, createRef } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -9,16 +11,11 @@ import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
+import { getBlogs, createBlog } from './services/requests'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
-
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -26,6 +23,23 @@ const App = () => {
       setUser(user)
     }
   }, [])
+
+  const newBlogMutation = useMutation({ mutationFn: createBlog })
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs
+  })
+
+  //console.log('blogs after query', JSON.parse(JSON.stringify(result)))
+
+  if (result.isLoading) {
+    return <div>Data loading...</div>
+  }
+
+  const blogs = result.data
+
+
 
   const blogFormRef = createRef()
 
@@ -48,9 +62,8 @@ const App = () => {
   }
 
   const handleCreate = async (blog) => {
-    const newBlog = await blogService.create(blog)
-    setBlogs(blogs.concat(newBlog))
-    notify(`Blog created: ${newBlog.title}, ${newBlog.author}`)
+    newBlogMutation.mutate({ ...blog, likes: 0 })
+    notify(`Blog created: ${blog.title}, ${blog.author}`)
     blogFormRef.current.toggleVisibility()
   }
 
@@ -62,7 +75,7 @@ const App = () => {
     })
 
     notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`)
-    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
   }
 
   const handleLogout = () => {
