@@ -1,7 +1,7 @@
 import { useState, useEffect, createRef, useReducer } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { getBlogs, createBlog } from './services/requests'
+import { getBlogs, createBlog, updateBlog, deleteBlog } from './services/requests'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -28,6 +28,7 @@ const notifyReducer = (state, action) => {
 
 
 const App = () => {
+  const queryClient = useQueryClient()
   const [user, setUser] = useState(null)
   // const [notification, setNotification] = useState(null)
 
@@ -40,7 +41,26 @@ const App = () => {
     }
   }, [])
 
-  const newBlogMutation = useMutation({ mutationFn: createBlog })
+  const newBlogMutation = useMutation({
+    mutationFn: createBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+    },
+  })
+
+  const updateBlogMutation = useMutation({
+    mutationFn: updateBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+    }
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+    }
+  })
 
   const result = useQuery({
     queryKey: ['blogs'],
@@ -54,8 +74,6 @@ const App = () => {
   }
 
   const blogs = result.data
-
-
 
 
   const blogFormRef = createRef()
@@ -91,14 +109,14 @@ const App = () => {
   }
 
   const handleVote = async (blog) => {
-    console.log('updating', blog)
-    const updatedBlog = await blogService.update(blog.id, {
+    console.log('updating blog with id:', blog.id)
+    const likedBlog = {
       ...blog,
       likes: blog.likes + 1
-    })
+    }
+    updateBlogMutation.mutate(likedBlog)
+    notify(`You liked ${blog.title} by ${blog.author}`)
 
-    notify(`You liked ${updatedBlog.title} by ${updatedBlog.author}`)
-    //setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
   }
 
   const handleLogout = () => {
@@ -109,8 +127,7 @@ const App = () => {
 
   const handleDelete = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
+      deleteBlogMutation.mutate(blog)
       notify(`Blog ${blog.title}, by ${blog.author} removed`)
     }
   }

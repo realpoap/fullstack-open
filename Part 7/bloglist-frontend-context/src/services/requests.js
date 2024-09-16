@@ -13,8 +13,23 @@ export const getBlogs = () =>
 		.then(res => res.data)
 
 export const createBlog = async (newBlog) => {
-	console.log(newBlog)
+	//console.log(newBlog)
 	await axios
 		.post(baseUrl, newBlog, getConfig())
+		.then(res => res.data)
+}
+
+export const updateBlog = async (newBlog) => {
+	//console.log(newBlog)
+	console.log('id:', newBlog.id)
+
+	await axios
+		.put(`${baseUrl}/${newBlog.id}`, newBlog, getConfig())
+		.then(res => res.data)
+}
+
+export const deleteBlog = async (blog) => {
+	await axios
+		.delete(`${baseUrl}/${blog.id}`, getConfig())
 		.then(res => res.data)
 }
