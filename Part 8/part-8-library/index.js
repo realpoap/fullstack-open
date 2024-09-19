@@ -120,6 +120,10 @@ const typeDefs = `
 			name: String!
 			born: Int
 		) : Author
+		editAuthor(
+			name: String!
+			setBornTo: Int!
+		) : Author
 	}
 `
 
@@ -155,7 +159,7 @@ const resolvers = {
 	},
 	Mutation: {
 		addAuthor: (root, args) => {
-			if (authors.find(p => p.name === args.name)) {
+			if (authors.find(a => a.name === args.name)) {
 				throw new GraphQLError('Author already exists', {
 					extension: {
 						code: 'BAD USER INPUT',
@@ -169,13 +173,26 @@ const resolvers = {
 		},
 		addBook: (root, args) => {
 			//search if author exists, if not create it
-			if (!authors.find(p => p.name === args.author)) {
+			if (!authors.find(a => a.name === args.author)) {
 				const author = { name: args.author, id: uuid() }
 				authors = authors.concat(author)
 			}
 			const book = { ...args, id: uuid() }
 			books = books.concat(book)
 			return book
+		},
+		editAuthor: (root, args) => {
+			const foundAuthor = authors.find(a => a.name === args.name)
+			if (!foundAuthor) {
+				throw new GraphQLError('Author does not exists', {
+					extension: {
+						code: 'BAD USER INPUT',
+						invalidArgs: args.name
+					}
+				})
+			}
+			foundAuthor.born = args.setBornTo
+			return foundAuthor
 		}
 	}
 }
