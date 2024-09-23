@@ -43,7 +43,11 @@ const App = () => {
         <button onClick={() => setPage("add")}>add book</button>
       </div>
       <Notify errorMessage={errorMessage} />
-      <Authors show={page === "authors"} authors={allAuthorsQResults.data.allAuthors} />
+      <Authors
+        show={page === "authors"}
+        authors={allAuthorsQResults.data.allAuthors}
+        notify={notify}
+      />
 
       <Books show={page === "books"} books={allBooksQResults.data.allBooks} />
 
