@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { React, useState } from "react"
+import Select from 'react-select'
 
 import { CHANGE_YEAR, ALL_AUTHORS } from "../queries"
 import { useMutation } from "@apollo/client"
@@ -7,6 +8,16 @@ const Authors = ({ show, authors, notify }) => {
 
   const [birthyear, setBirthyear] = useState('')
   const [author, setAuthor] = useState('')
+
+  const options = authors.map(a => {
+    return (
+      {
+        value: a.name,
+        label: a.name
+      }
+    )
+  }
+  )
 
   const [changeYear] = useMutation(CHANGE_YEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -20,7 +31,7 @@ const Authors = ({ show, authors, notify }) => {
     event.preventDefault()
     console.log(`name: ${author}, type: ${typeof (author)}`)
     console.log(`birthyear: ${birthyear}, type: ${typeof (birthyear)}`)
-    const name = author
+    const name = author.value
     const setBornTo = birthyear
     // YOU NEED THE EXACT SAME NAME FOR THE VARIABLES IN THE MUTATION DUHHHH
     await changeYear({ variables: { name, setBornTo } })
@@ -58,9 +69,11 @@ const Authors = ({ show, authors, notify }) => {
         <form onSubmit={handleSubmit}>
           <div>
             Author
-            <input
+            <Select
+              placeholder={'select author'}
               value={author}
-              onChange={e => setAuthor(e.target.value)}
+              onChange={setAuthor}
+              options={options}
             />
           </div>
           <div>
