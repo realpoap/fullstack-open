@@ -15,7 +15,7 @@ const NewBook = ({ show, createBook }) => {
     event.preventDefault()
 
     console.log('add book...')
-    createBook({ variables: { title, published, author, genres } })
+    await createBook({ variables: { title, published, author, genres } })
 
     setTitle('')
     setPublished('')

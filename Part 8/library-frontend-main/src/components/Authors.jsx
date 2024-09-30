@@ -5,7 +5,7 @@ import { useMutation } from "@apollo/client"
 
 const Authors = ({ show, authors, notify }) => {
 
-  const [birthyear, setBirthyear] = useState(null)
+  const [birthyear, setBirthyear] = useState('')
   const [author, setAuthor] = useState('')
 
   const [changeYear] = useMutation(CHANGE_YEAR, {
@@ -18,11 +18,15 @@ const Authors = ({ show, authors, notify }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log(`name: ${author}, birthyear: ${birthyear}`)
-    changeYear({ variables: { author, birthyear } })
+    console.log(`name: ${author}, type: ${typeof (author)}`)
+    console.log(`birthyear: ${birthyear}, type: ${typeof (birthyear)}`)
+    const name = author
+    const setBornTo = birthyear
+    // YOU NEED THE EXACT SAME NAME FOR THE VARIABLES IN THE MUTATION DUHHHH
+    await changeYear({ variables: { name, setBornTo } })
 
     setAuthor('')
-    setBirthyear(null)
+    setBirthyear('')
   }
 
   if (!show) {
@@ -56,16 +60,15 @@ const Authors = ({ show, authors, notify }) => {
             Author
             <input
               value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            ></input>
+              onChange={e => setAuthor(e.target.value)}
+            />
           </div>
           <div>
             Birthyear
             <input
-              type="number"
               value={birthyear}
-              onChange={({ target }) => setBirthyear(parseInt(target.value))}
-            ></input>
+              onChange={e => setBirthyear(parseInt(e.target.value))}
+            />
           </div>
           <button type="submit">Change Year</button>
         </form>
