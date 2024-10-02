@@ -3,6 +3,24 @@ const { startStandaloneServer } = require('@apollo/server/standalone')
 const { GraphQLError } = require('graphql')
 const { v1: uuid } = require('uuid')
 
+const mongoose = require('mongoose')
+mongoose.set('strictQuery', false)
+const Book = require('./models/book')
+const Author = require('./models/author')
+
+require('dotenv').config()
+
+const MONGODB_URI = process.env.MONGODB_URI
+console.log('connecting to ', MONGODB_URI)
+
+mongoose.connect(MONGODB_URI)
+	.then(() => {
+		console.log('\n .: connected to MongoDB!')
+	})
+	.catch(error => {
+		console.log('\n .: error connecting to MongoDB: ', error.message)
+	})
+
 let authors = [
 	{
 		name: 'Robert Martin',
@@ -81,9 +99,7 @@ let books = [
 	},
 ]
 
-/*
-	you can remove the placeholder query once your first one has been implemented 
-*/
+
 
 const typeDefs = `
 	type Author {
@@ -96,7 +112,7 @@ const typeDefs = `
   type Book {
     title: String!
 		published: Int!
-		author: String!
+		author: Author!
 		id: ID!
 		genres: [String!]!
   }
@@ -129,57 +145,53 @@ const typeDefs = `
 
 const resolvers = {
 	Query: {
-		bookCount: () => {
-			return books.length
-		},
-		authorCount: () => authors.length,
-		allBooks: (root, args) => {
-			if (!args.author && !args.genre) { return books }
-
-			if (args.author) {
-				const authorBooks = books.filter(b => b.author === args.author)
-				if (!args.genre) { return authorBooks }
-
-				const genreBooks = authorBooks.filter(b => b.genres.includes(args.genre))
-				return { genreBooks }
-
+		bookCount: async () => Book.collection.countDocuments(),
+		authorCount: () => Author.collection.countDocuments(),
+		allBooks: async (root, args) => {
+			if (!args.author && !args.genre) {
+				Book.find({})
 			}
-			if (args.genre) {
-				const genreBooks = books.filter(b => b.genres.includes(args.genre))
-				return genreBooks
-			}
-
+			Book.find({})
+			// if (args.author) {
+			// 	if (!args.genre) {
+			// 		Book.find({ author: args.author })
+			// 	}
+			// 	Book.find({ genres: args.genre })
+			// }
+			// if (args.genre) {
+			// 	Book.find({ genres: args.genre })
+			// }
 		},
-		allAuthors: (root, args) => {
-			return authors
+		allAuthors: async (root, args) => {
+			Author.find({})
 		},
 	},
-	Author: {
-		bookCount: (root) => { return books.filter(b => b.author === root.name).length }
-	},
+	// Author: {
+	// 	bookCount: async (root) => {
+	// 		Book.collection.countDocuments({ author: root.name })
+	// 	},
 	Mutation: {
-		addAuthor: (root, args) => {
-			if (authors.find(a => a.name === args.name)) {
-				throw new GraphQLError('Author already exists', {
-					extension: {
-						code: 'BAD USER INPUT',
-						invalidArgs: args.name
-					}
-				})
-			}
-			const author = { ...args, id: uuid() }
-			authors = authors.concat(author)
-			return author
+		addAuthor: async (root, args) => {
+			// if (authors.find(a => a.name === args.name)) {
+			// 	throw new GraphQLError('Author already exists', {
+			// 		extension: {
+			// 			code: 'BAD USER INPUT',
+			// 			invalidArgs: args.name
+			// 		}
+			// 	})
+			// }
+			const author = new Author({ ...args })
+			return author.save()
 		},
-		addBook: (root, args) => {
+		addBook: async (root, args) => {
 			//search if author exists, if not create it
-			if (!authors.find(a => a.name === args.author)) {
-				const author = { name: args.author, id: uuid() }
-				authors = authors.concat(author)
-			}
-			const book = { ...args, id: uuid() }
-			books = books.concat(book)
-			return book
+			// if (!authors.find(a => a.name === args.author)) {
+			// 	const author = { name: args.author, id: uuid() }
+			// 	authors = authors.concat(author)
+			// }
+
+			const book = new Book({ ...args })
+			return book.save()
 		},
 		editAuthor: (root, args) => {
 			const foundAuthor = authors.find(a => a.name === args.name)
@@ -196,6 +208,7 @@ const resolvers = {
 		}
 	}
 }
+
 
 const server = new ApolloServer({
 	typeDefs,
