@@ -100,10 +100,21 @@ const resolvers = {
 			console.log(authorFound)
 			if (authorFound === null) {
 				const author = new Author({ ...args })
-				return author.save()
+				try {
+					await author.save()
+				}
+				catch (err) {
+					throw new GraphQLError('Saving author failed', {
+						extensions: {
+							code: 'BAD USER INPUT',
+							invalidArgs: args.name,
+							err
+						}
+					})
+				}
 			} else {
 				throw new GraphQLError('Author already exists', {
-					extension: {
+					extensions: {
 						code: 'BAD USER INPUT',
 						invalidArgs: args.name
 					}
@@ -116,12 +127,46 @@ const resolvers = {
 			if (authorFound === null) {
 				console.log("creating author...", args.author)
 				const author = await new Author({ name: args.author })
-				author.save()
+				try {
+					await author.save()
+				}
+				catch (err) {
+					throw new GraphQLError('Saving author failed', {
+						extensions: {
+							code: 'BAD USER INPUT',
+							invalidArgs: args.name,
+							err
+						}
+					})
+				}
+				//THEN
 				const book = await new Book({ ...args, author: author })
-				return book.save()
+				try {
+					await book.save()
+				} catch (err) {
+					throw new GraphQLError('Saving book failed', {
+						extensions: {
+							code: 'BAD USER INPUT',
+							invalidArgs: args.title,
+							err
+						}
+					})
+				}
+				return book
 			}
 			const book = await new Book({ ...args, author: authorFound })
-			return book.save()
+			try {
+				await book.save()
+			} catch (err) {
+				throw new GraphQLError('Saving book failed', {
+					extensions: {
+						code: 'BAD USER INPUT',
+						invalidArgs: args.title,
+						err
+					}
+				})
+			}
+			return book
 		},
 		editAuthor: async (root, args) => {
 			const foundAuthor = await Author.findOne({ name: args.name })
