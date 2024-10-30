@@ -170,6 +170,7 @@ const resolvers = {
 			}
 		},
 		addBook: async (root, args, context) => {
+			// IF LOGGED IN
 			if (!context.currentUser) {
 				throw new GraphQLError('You need to log in', {
 					extensions: {
@@ -177,6 +178,7 @@ const resolvers = {
 					}
 				})
 			}
+			// DO
 			console.log('author input:', args.author)
 			const authorFound = await Author.findOne({ name: args.author })
 			console.log('Author found as : ', authorFound)
@@ -220,7 +222,7 @@ const resolvers = {
 				throw new GraphQLError('Saving book failed', {
 					extensions: {
 						code: 'BAD USER INPUT',
-						invalidArgs: args.title,
+						invalidArgs: args.genres,
 						err
 					}
 				})
