@@ -15,7 +15,8 @@ allBooks{
   title
   published
   author{
-  name}
+  name
+  }
   }}`
 
 export const ADD_BOOK = gql`
@@ -23,9 +24,6 @@ export const ADD_BOOK = gql`
   addBook(title: $title, published: $published, author: $author, genres: $genres) {
     title
     published
-    author {
-    name
-    }
     genres
   }
 }

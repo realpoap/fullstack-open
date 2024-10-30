@@ -86,14 +86,14 @@ const typeDefs = `
 `
 
 const resolvers = {
-	// Book: {
-	// 	author: async (parent) => {
-	// 		console.log('searching for author in Book : ', parent.author.toString())
-	// 		const author = await Author.findOne({ _id: parent.author.toString() })
-	// 		console.log('author is : ', author.name)
-	// 		return author
-	// 	}
-	// },
+	Book: {
+		author: async (parent) => {
+			console.log('searching for author in Book : ', parent.author.toString())
+			const author = await Author.findOne({ _id: parent.author.toString() })
+			console.log('author is : ', author.name)
+			return author
+		}
+	},
 	Query: {
 		bookCount: async () => await Book.collection.countDocuments(),
 		authorCount: async () => await Author.collection.countDocuments(),
