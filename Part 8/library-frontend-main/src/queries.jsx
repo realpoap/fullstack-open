@@ -14,6 +14,8 @@ query{
 allBooks{
   title
   published
+  author{
+  name}
   }}`
 
 export const ADD_BOOK = gql`

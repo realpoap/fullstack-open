@@ -26,7 +26,7 @@ mongoose.connect(MONGODB_URI)
 
 const typeDefs = `
 	type Author {
-		name: String!
+		name: String
 		id: ID!
 		born: Int
 		bookCount: Int
@@ -56,6 +56,7 @@ const typeDefs = `
 		allBooks(author: String, genre: String): [Book!]!
 		allAuthors(author: String): [Author!]!
 		me: User
+		author(id: ID): Author
 	}
 
 	type Mutation {
@@ -85,33 +86,53 @@ const typeDefs = `
 `
 
 const resolvers = {
+	Book: {
+		author: async (parent) => {
+			console.log('searching for author in Book : ', parent.author.toString())
+			const author = await Author.findOne({ _id: parent.author.toString() })
+			console.log('author is : ', author.name)
+			return author
+		}
+	},
 	Query: {
-		bookCount: async () => Book.collection.countDocuments(),
-		authorCount: async () => Author.collection.countDocuments(),
+		bookCount: async () => await Book.collection.countDocuments(),
+		authorCount: async () => await Author.collection.countDocuments(),
+
 		allBooks: async (root, args) => {
 			if (!args.author && !args.genre) {
-				return Book.find({})
+				try {
+					return await Book.find({})
+				}
+				catch (err) {
+					throw new GraphQLError('Error when querying books', {
+						extensions: {
+							code: 'BAD USER INPUT',
+							invalidArgs: args.author,
+							err
+						}
+					})
+				}
 			}
 			if (args.author) {
 				console.log("author:", args.author)
-				const author = await Author.find({ name: args.author })
+				const author = await Author.findOne({ name: args.author })
 				console.log(author._id)
 				if (!args.genre) {
-					return Book.find({ author: author })
+					return await Book.find({ author: author })
 				}
-				return Book.find({ genres: { $in: args.genre }, author: author })
+				return await Book.find({ genres: { $in: args.genre }, author: author })
 			}
 			if (args.genre) {
 				console.log("genre:", args.genre)
-				return Book.find({ genres: { $in: args.genre } })
+				return await Book.find({ genres: { $in: args.genre } })
 			}
 		},
 		allAuthors: async (root, args) => {
 			if (args.author) {
 				console.log("author:", args.author)
-				return Author.find({ name: args.author })
+				return await Author.findOne({ name: args.author })
 			}
-			return Author.find({})
+			return await Author.find({})
 		},
 		me: async (root, args, context) => {
 			return context.currentUser
@@ -128,7 +149,7 @@ const resolvers = {
 			}
 			console.log("name:", args.name)
 			const authorFound = await Author.findOne({ name: args.name })
-			console.log(authorFound)
+			console.log('authorFound: ', authorFound)
 			if (authorFound === null) {
 				const author = new Author({ ...args })
 				return author.save()
@@ -148,7 +169,6 @@ const resolvers = {
 					}
 				})
 			}
-
 		},
 		addBook: async (root, args, context) => {
 			if (!context.currentUser) {
@@ -158,13 +178,16 @@ const resolvers = {
 					}
 				})
 			}
-			console.log('author:', args.author)
+			console.log('author input:', args.author)
 			const authorFound = await Author.findOne({ name: args.author })
+			console.log('Author found as : ', authorFound)
+
 			if (authorFound === null) {
 				console.log("creating author...", args.author)
 				const author = await new Author({ name: args.author })
 				try {
 					await author.save()
+
 				}
 				catch (err) {
 					throw new GraphQLError('Saving author failed', {
@@ -191,6 +214,7 @@ const resolvers = {
 				return book
 			}
 			const book = await new Book({ ...args, author: authorFound })
+			console.log('the book is :', book)
 			try {
 				await book.save()
 			} catch (err) {
