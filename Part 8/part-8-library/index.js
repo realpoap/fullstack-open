@@ -42,12 +42,12 @@ const typeDefs = `
 
 	type User {
 		username: String!
-		favoriteGenre: String
+		favoriteGenre: String!
 		id: ID!
 	}
 
 	type Token {
-		value: String
+		value: String!
 	}
 
 	type Query {
@@ -86,14 +86,14 @@ const typeDefs = `
 `
 
 const resolvers = {
-	Book: {
-		author: async (parent) => {
-			console.log('searching for author in Book : ', parent.author.toString())
-			const author = await Author.findOne({ _id: parent.author.toString() })
-			console.log('author is : ', author.name)
-			return author
-		}
-	},
+	// Book: {
+	// 	author: async (parent) => {
+	// 		console.log('searching for author in Book : ', parent.author.toString())
+	// 		const author = await Author.findOne({ _id: parent.author.toString() })
+	// 		console.log('author is : ', author.name)
+	// 		return author
+	// 	}
+	// },
 	Query: {
 		bookCount: async () => await Book.collection.countDocuments(),
 		authorCount: async () => await Author.collection.countDocuments(),
@@ -255,7 +255,9 @@ const resolvers = {
 				})
 		},
 		login: async (root, args) => {
-			const user = User.findOne({ username: args.username })
+			console.log('username input:', args.username)
+			const user = await User.findOne({ username: args.username })
+			console.log('user:', user.data)
 
 			if (!user || args.password !== 'secret') {
 				throw new GraphQLError('Login failed', {
@@ -267,12 +269,12 @@ const resolvers = {
 
 			const userForToken = {
 				username: user.username,
-				id: user._id
+				id: user._id,
 			}
-
-			return {
-				value: jwt.sign(userForToken, process.env.JWT_SECRET)
-			}
+			console.log('logging in with :', userForToken)
+			const token = jwt.sign(userForToken, process.env.JWT_SECRET)
+			console.log(token)
+			return { value: token }
 		}
 	}
 }
@@ -291,8 +293,10 @@ startStandaloneServer(server, {
 			const decodedToken = jwt.verify(
 				auth.substring(7), process.env.JWT_SECRET
 			)
+			//console.log('id:', decodedToken.id)
 			const currentUser = await User.findById(decodedToken.id)
-			return currentUser
+			//console.log(currentUser)
+			return { currentUser }
 		}
 	},
 })

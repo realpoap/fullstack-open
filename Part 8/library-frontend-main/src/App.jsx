@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation, useApolloClient } from "@apollo/client";
 
 import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK } from "./queries";
 
@@ -16,6 +16,7 @@ const App = () => {
   const [page, setPage] = useState("authors");
   const [errorMessage, setErrorMessage] = useState("")
   const [token, setToken] = useState(null)
+  const client = useApolloClient()
 
   const allAuthorsQResults = useQuery(ALL_AUTHORS)
   const allBooksQResults = useQuery(ALL_BOOKS)
@@ -29,6 +30,12 @@ const App = () => {
 
   if (allAuthorsQResults.loading || allBooksQResults.loading) {
     return <div>Loading data...</div>
+  }
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
   }
 
   const notify = (message) => {
@@ -45,7 +52,7 @@ const App = () => {
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
         {token ? <button onClick={() => setPage("add")}>add book</button> : <button onClick={() => setPage("login")}>login</button>}
-        {token ? <button onClick={() => setPage('logout')}>logout</button> : null}
+        {token ? <button onClick={logout}>logout</button> : null}
 
       </div>
       <Notify errorMessage={errorMessage} />
