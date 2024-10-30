@@ -227,7 +227,7 @@ const resolvers = {
 			}
 			return book
 		},
-		editAuthor: async (root, args) => {
+		editAuthor: async (root, args, context) => {
 			if (!context.currentUser) {
 				throw new GraphQLError('You need to log in', {
 					extensions: {
