@@ -8,7 +8,8 @@ const schema = mongoose.Schema({
 		minlength: 5
 	},
 	born: {
-		type: Number
+		type: Number,
+		required: false,
 	}
 })
 

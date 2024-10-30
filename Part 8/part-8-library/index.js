@@ -56,7 +56,6 @@ const typeDefs = `
 		allBooks(author: String, genre: String): [Book!]!
 		allAuthors(author: String): [Author!]!
 		me: User
-		author(id: ID): Author
 	}
 
 	type Mutation {
@@ -229,6 +228,13 @@ const resolvers = {
 			return book
 		},
 		editAuthor: async (root, args) => {
+			if (!context.currentUser) {
+				throw new GraphQLError('You need to log in', {
+					extensions: {
+						code: 'BAD USER INPUT',
+					}
+				})
+			}
 			const foundAuthor = await Author.findOne({ name: args.name })
 			if (!foundAuthor) {
 				throw new GraphQLError('Author does not exists', {
@@ -239,6 +245,7 @@ const resolvers = {
 				})
 			}
 			foundAuthor.born = args.setBornTo
+			foundAuthor.save()
 			return foundAuthor
 		},
 		createUser: async (root, args) => {
