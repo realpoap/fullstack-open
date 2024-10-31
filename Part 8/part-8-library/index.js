@@ -77,6 +77,10 @@ const typeDefs = `
 		 username: String!
 		 favoriteGenre: String
 		):User
+		changeGenre(
+			username: String!
+			favoriteGenre: String!
+		):User
 		login(
 		 username: String!
 		 password: String!
@@ -262,6 +266,28 @@ const resolvers = {
 						}
 					})
 				})
+		},
+		changeGenre: async (root, args, context) => {
+			if (!context.currentUser) {
+				throw new GraphQLError('You need to log in', {
+					extensions: {
+						code: 'BAD USER INPUT',
+					}
+				})
+			}
+			console.log('trying to edit the favoriteGenre :', args.favoriteGenre)
+			const user = await User.findOne({ username: args.username })
+			if (!user) {
+				throw new GraphQLError('User does not exist', {
+					extensions: {
+						code: 'BAD USER INPUT',
+					}
+				})
+			}
+			user.favoriteGenre = args.favoriteGenre
+			user.save()
+			console.log('favoriteGenre edited ! :', user.favoriteGenre)
+			return user
 		},
 		login: async (root, args) => {
 			console.log('username input:', args.username)

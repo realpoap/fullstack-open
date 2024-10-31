@@ -1,10 +1,12 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useState, useEffect } from 'react';
-import { LOGIN } from '../queries';
+import { LOGIN, CURRENT_USER } from '../queries';
 
-const LoginForm = ({ show, setError, setToken }) => {
+const LoginForm = ({ show, setError, setToken, setCurrentUser }) => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
+
+	const currentUserQResults = useQuery(CURRENT_USER)
 
 	const [login, result] = useMutation(LOGIN, {
 		onError: (error) => {
@@ -23,6 +25,7 @@ const LoginForm = ({ show, setError, setToken }) => {
 	const submit = async (event) => {
 		event.preventDefault()
 		login({ variables: { username, password } })
+			.then(setCurrentUser(currentUserQResults.data.me))
 	}
 
 	if (!show) {
