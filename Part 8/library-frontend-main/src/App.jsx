@@ -42,8 +42,6 @@ const App = () => {
     },
   })
 
-
-
   if (allAuthorsQResults.loading || allBooksQResults.loading) {
     return <div>Loading data...</div>
   }

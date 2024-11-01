@@ -23,6 +23,7 @@ const LoginForm = ({ show, setError, setToken, setCurrentUser }) => {
 	}, [result.data])
 
 	const submit = async (event) => {
+
 		event.preventDefault()
 		login({ variables: { username, password } })
 			.then(setCurrentUser(currentUserQResults.data.me))

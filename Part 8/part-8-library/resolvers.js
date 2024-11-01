@@ -64,6 +64,7 @@ const resolvers = {
 			return await Author.find({})
 		},
 		me: async (root, args, context) => {
+			if (!context.currentUser) return console.log('no current user')
 			console.log('fired ME query: ', context.currentUser)
 			return context.currentUser
 		}
@@ -218,7 +219,7 @@ const resolvers = {
 		login: async (root, args) => {
 			console.log('username input:', args.username)
 			const user = await User.findOne({ username: args.username })
-			console.log('user:', user.data)
+			console.log('login in user:', user.data)
 
 			if (!user || args.password !== 'secret') {
 				throw new GraphQLError('Login failed', {
