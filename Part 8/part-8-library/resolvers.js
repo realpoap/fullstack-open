@@ -1,9 +1,12 @@
 const { GraphQLError } = require('graphql')
 const jwt = require('jsonwebtoken')
+const { PubSub } = require('graphql-subscriptions')
 
 const Book = require('./models/book')
 const Author = require('./models/author')
 const User = require('./models/user')
+
+const pubsub = new PubSub()
 
 const resolvers = {
 	Book: {
@@ -74,9 +77,8 @@ const resolvers = {
 					}
 				})
 			}
-			console.log("name:", args.name)
 			const authorFound = await Author.findOne({ name: args.name })
-			console.log('authorFound: ', authorFound)
+			console.log('authorFound: ', authorFound !== null)
 			if (authorFound === null) {
 				const author = new Author({ ...args })
 				return author.save()
@@ -107,16 +109,14 @@ const resolvers = {
 				})
 			}
 			// DO
-			console.log('author input:', args.author)
 			const authorFound = await Author.findOne({ name: args.author })
-			console.log('Author found as : ', authorFound)
+			console.log('Author found : ', authorFound !== null)
 
 			if (authorFound === null) {
 				console.log("creating author...", args.author)
-				const author = await new Author({ name: args.author })
+				const author = await new Author({ name: args.author, born: 0 })
 				try {
 					await author.save()
-
 				}
 				catch (err) {
 					throw new GraphQLError('Saving author failed', {
@@ -140,6 +140,7 @@ const resolvers = {
 						}
 					})
 				}
+				pubsub.publish('BOOK_ADDED', { bookAdded: book })
 				return book
 			}
 			const book = await new Book({ ...args, author: authorFound })
@@ -155,6 +156,7 @@ const resolvers = {
 					}
 				})
 			}
+			pubsub.publish('BOOK_ADDED', { bookAdded: book })
 			return book
 		},
 		editAuthor: async (root, args, context) => {
@@ -225,17 +227,19 @@ const resolvers = {
 					}
 				})
 			}
-
 			const userForToken = {
 				username: user.username,
 				id: user._id,
 			}
-			console.log('logging in with :', userForToken)
 			const token = jwt.sign(userForToken, process.env.JWT_SECRET)
-			console.log(token)
 			return { value: token }
 		}
-	}
+	},
+	Subscription: {
+		bookAdded: {
+			subscribe: () => pubsub.asyncIterator('BOOK_ADDED')
+		},
+	},
 }
 
 module.exports = resolvers

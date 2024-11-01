@@ -19,6 +19,15 @@ fragment AuthorDetails on Author {
 }
 `
 
+export const BOOK_ADDED = gql`
+  ${BOOK_DETAILS}  
+  subscription {
+      bookAdded {
+        ...BookDetails
+      }
+    }
+  `
+
 export const CURRENT_USER = gql`
 query {
   me {
@@ -62,11 +71,10 @@ export const BOOKS_BY_GENRE = gql`
   `
 
 export const ADD_BOOK = gql`
+  ${BOOK_DETAILS}
   mutation createBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
   addBook(title: $title, published: $published, author: $author, genres: $genres) {
-    title
-    published
-    genres
+    ...BookDetails
   }
 }
 `
