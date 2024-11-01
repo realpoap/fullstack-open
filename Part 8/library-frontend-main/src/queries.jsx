@@ -1,5 +1,24 @@
 import { gql } from "@apollo/client"
 
+const BOOK_DETAILS = gql`
+fragment BookDetails on Book {
+  title
+  published
+  author  {
+    name
+    born
+  }
+  genres
+}
+`
+const AUTHOR_DETAILS = gql`
+fragment AuthorDetails on Author {
+  name
+  born
+  bookCount
+}
+`
+
 export const CURRENT_USER = gql`
 query{
   me{
@@ -9,47 +28,38 @@ query{
 }
 `
 export const CHANGE_GENRE = gql`
-mutation changeGenre($username: String!, $favoriteGenre: String!) {
-  changeGenre(username: $username, favoriteGenre: $favoriteGenre) {
-    username
-    favoriteGenre  
+  mutation changeGenre($username: String!, $favoriteGenre: String!) {
+    changeGenre(username: $username, favoriteGenre: $favoriteGenre) {
+      username
+      favoriteGenre  
+    }
   }
-}
-`
+  `
 
 export const ALL_AUTHORS = gql`
-query{
-  allAuthors{
-    name
-    born
-    bookCount
-  }
-}`
+  ${AUTHOR_DETAILS}
+  query{
+    allAuthors {
+      ...AuthorDetails
+    }
+  }`
 
 export const ALL_BOOKS = gql`
-query{
-  allBooks{
-    title
-    published
-    genres
-    author{
-      name
+  ${BOOK_DETAILS}
+  query{
+    allBooks{
+      ...BookDetails
     }
-  }
-}`
+  }`
 
 export const BOOKS_BY_GENRE = gql`
-query {
-  allBooks(genre: $genre) {
-    title
-    published
-    genres
-    author {
-      name
+  ${BOOK_DETAILS}
+  query {
+    allBooks(genre: $genre) {
+      ...BookDetails
     }
   }
-}
-`
+  `
 
 export const ADD_BOOK = gql`
   mutation createBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
@@ -62,14 +72,13 @@ export const ADD_BOOK = gql`
 `
 
 export const CHANGE_YEAR = gql`
-  mutation changeYear($name: String!, $setBornTo: Int!) {
-  editAuthor(name: $name, setBornTo: $setBornTo) {
-    name
-    born
-    bookCount
+  ${AUTHOR_DETAILS}
+    mutation changeYear($name: String!, $setBornTo: Int!) {
+    editAuthor(name: $name, setBornTo: $setBornTo) {
+      ...AuthorDetails
+    }
   }
-}
-`
+  `
 
 export const LOGIN = gql`
   mutation login ($username: String!, $password: String!) {

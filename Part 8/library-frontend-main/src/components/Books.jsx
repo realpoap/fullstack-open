@@ -13,12 +13,7 @@ const Books = ({ show, books }) => {
       })
     })
     setList(genreList)
-    console.log('list:', list)
   }, [books])
-
-  const handleClick = (g) => {
-    console.log(g)
-  }
 
   if (!show) {
     return null
@@ -47,10 +42,7 @@ const Books = ({ show, books }) => {
                 </tr>
               )
             }
-
-
-          }
-          )
+          })
           }
         </tbody>
       </table>

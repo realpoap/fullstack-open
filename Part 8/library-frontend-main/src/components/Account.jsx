@@ -18,7 +18,7 @@ const Account = ({ show, books, user, favoriteGenre, setFavoriteGenre, notify })
 			})
 		})
 		setList(genreList)
-	}, [])
+	}, [books])
 
 	//CHANGE GENRE IN DB
 	useEffect(() => {
