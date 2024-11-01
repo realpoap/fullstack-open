@@ -1,9 +1,9 @@
 const typeDefs = `
 	type Author {
-		name: String
+		name: String!
 		id: ID!
-		born: Int
-		bookCount: Int
+		born: Int!
+		authorCount: Int!
 	}
 
   type Book {
@@ -24,12 +24,15 @@ const typeDefs = `
 		value: String!
 	}
 
+	type Subscription {
+		bookAdded: Book!
+	}
+
 	type Query {
-		bookCount: Int
-		authorCount: Int!
+		bookCount: Int!
 		allBooks(author: String, genre: String): [Book!]!
 		allAuthors(author: String): [Author!]!
-		me: User
+		me: User!
 	}
 
 	type Mutation {
@@ -39,22 +42,27 @@ const typeDefs = `
 			author: String!
 			genres: [String!]!
 		) : Book
+
 		addAuthor(
 			name: String!
 			born: Int
 		) : Author
+
 		editAuthor(
 			name: String!
 			setBornTo: Int!
 		) : Author
+
 		createUser(
 		 username: String!
 		 favoriteGenre: String
 		):User
+
 		changeGenre(
 			username: String!
 			favoriteGenre: String!
 		):User
+
 		login(
 		 username: String!
 		 password: String!

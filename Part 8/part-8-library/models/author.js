@@ -10,7 +10,7 @@ const schema = mongoose.Schema({
 	born: {
 		type: Number,
 		required: false,
-	}
+	},
 })
 
 module.exports = mongoose.model('Author', schema)

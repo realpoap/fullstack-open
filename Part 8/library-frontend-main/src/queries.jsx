@@ -15,15 +15,15 @@ const AUTHOR_DETAILS = gql`
 fragment AuthorDetails on Author {
   name
   born
-  bookCount
+  authorCount
 }
 `
 
 export const CURRENT_USER = gql`
-query{
-  me{
-  username
-  favoriteGenre
+query {
+  me {
+    username
+    favoriteGenre
   }
 }
 `

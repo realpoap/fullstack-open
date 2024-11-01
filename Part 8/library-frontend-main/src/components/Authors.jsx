@@ -4,7 +4,7 @@ import Select from 'react-select'
 import { CHANGE_YEAR, ALL_AUTHORS } from "../queries"
 import { useMutation } from "@apollo/client"
 
-const Authors = ({ show, authors, notify }) => {
+const Authors = ({ user, show, authors, notify }) => {
 
   const [birthyear, setBirthyear] = useState('')
   const [author, setAuthor] = useState('')
@@ -53,18 +53,18 @@ const Authors = ({ show, authors, notify }) => {
           <tr>
             <th></th>
             <th>born</th>
-            <th>books</th>
+            <th>books written</th>
           </tr>
           {authors.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
-              <td>{a.bookCount}</td>
+              <td>{a.authorCount}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div>
+      {user && <div>
         <h2>Set birthyear</h2>
         <form onSubmit={handleSubmit}>
           <div>
@@ -85,7 +85,7 @@ const Authors = ({ show, authors, notify }) => {
           </div>
           <button type="submit">Change Year</button>
         </form>
-      </div>
+      </div>}
     </div>
   )
 }

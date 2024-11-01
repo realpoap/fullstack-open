@@ -8,19 +8,25 @@ const User = require('./models/user')
 const resolvers = {
 	Book: {
 		author: async (parent) => {
-			console.log('searching for author in Book : ', parent.author.toString())
-			const author = await Author.findOne({ _id: parent.author.toString() })
-			console.log('author is : ', author.name)
+			const author = await Author.findOne({ _id: parent.author })
 			return author
+		}
+	},
+	Author: {
+		authorCount: async (root) => {
+			const count = await Book.collection.countDocuments({
+				author: root._id
+			})
+			console.log(`book count for ${root.name}: ${count}`)
+			return count
 		}
 	},
 	Query: {
 		bookCount: async () => await Book.collection.countDocuments(),
-		authorCount: async () => await Author.collection.countDocuments(),
-
 		allBooks: async (root, args) => {
 			if (!args.author && !args.genre) {
 				try {
+					console.log('searching all books...')
 					return await Book.find({})
 				}
 				catch (err) {
@@ -49,12 +55,13 @@ const resolvers = {
 		},
 		allAuthors: async (root, args) => {
 			if (args.author) {
-				console.log("author:", args.author)
+				console.log("Query allAuthor:", args.author)
 				return await Author.findOne({ name: args.author })
 			}
 			return await Author.find({})
 		},
 		me: async (root, args, context) => {
+			console.log('fired ME query: ', context.currentUser)
 			return context.currentUser
 		}
 	},

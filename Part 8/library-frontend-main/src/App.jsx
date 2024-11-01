@@ -18,7 +18,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState("")
   const [token, setToken] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
-  const [favoriteGenre, setFavoriteGenre] = useState('')
   const client = useApolloClient()
 
 
@@ -64,18 +63,23 @@ const App = () => {
       </div>
       <Notify errorMessage={errorMessage} />
       <Authors
+        user={currentUser}
         show={page === "authors"}
         authors={allAuthorsQResults.data.allAuthors}
         notify={notify}
       />
-      <Books show={page === "books"} books={allBooksQResults.data.allBooks} />
-      <NewBook show={page === "add"} createBook={createBook} />
+      <Books
+        show={page === "books"}
+        books={allBooksQResults.data.allBooks}
+      />
+      <NewBook
+        show={page === "add"}
+        createBook={createBook}
+      />
       <Account
         show={page === "account"}
         books={allBooksQResults.data.allBooks}
         user={currentUser}
-        favoriteGenre={favoriteGenre}
-        setFavoriteGenre={setFavoriteGenre}
         notify={notify} />
 
       <LoginForm

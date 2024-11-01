@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { CHANGE_GENRE, CURRENT_USER } from "../queries";
 
-const Account = ({ show, books, user, favoriteGenre, setFavoriteGenre, notify }) => {
+const Account = ({ show, books, user, notify }) => {
 
 	const [list, setList] = useState([])
-	const [genre, setGenre] = useState('')
-
+	const [chosenGenre, setChosenGenre] = useState('')
 
 
 	//SET LIST OF GENRES AND FAVORITEGENRE
@@ -21,20 +20,14 @@ const Account = ({ show, books, user, favoriteGenre, setFavoriteGenre, notify })
 	}, [books])
 
 	//CHANGE GENRE IN DB
-	useEffect(() => {
-		if (user) {
+	const handleClick = async (event) => {
+		event.preventDefault()
+		const username = user.username
+		const favoriteGenre = event.target.value
+		console.log('change request', username, favoriteGenre);
+		await changeGenre({ variables: { username, favoriteGenre } })
 
-			console.log('genre changed', favoriteGenre);
-			const username = user.username
-			const changeUserFavGenre = async () => {
-				console.log('in async query')
-				await changeGenre({ variables: { username, favoriteGenre } })
-			}
-			changeUserFavGenre()
-				.catch(console.error);
-		}
-
-	}, [favoriteGenre])
+	}
 
 	const [changeGenre] = useMutation(CHANGE_GENRE, {
 		refetchQueries: [{ query: CURRENT_USER }],
@@ -49,10 +42,13 @@ const Account = ({ show, books, user, favoriteGenre, setFavoriteGenre, notify })
 		return null
 	}
 
+	console.log(`user favorite genre is ${user.favoriteGenre}`)
+
+
 	return (
 		<div>
 			<h2>Welcome {user.username} !</h2>
-			<div>Your favorite genre is : {favoriteGenre}</div>
+			<div>Your favorite genre is : {user.favoriteGenre}</div>
 			<table>
 				<tbody>
 					<tr>
@@ -61,7 +57,7 @@ const Account = ({ show, books, user, favoriteGenre, setFavoriteGenre, notify })
 						<th>published</th>
 					</tr>
 					{books.map((b) => {
-						if (b.genres.includes(favoriteGenre) || user.favoriteGenre === '') {
+						if (b.genres.includes(user.favoriteGenre) || user.favoriteGenre === '') {
 							return (
 								<tr key={b.title}>
 									<td>{b.title}</td>
@@ -75,7 +71,7 @@ const Account = ({ show, books, user, favoriteGenre, setFavoriteGenre, notify })
 			</table>
 			<h4>Set your favorite genre as :</h4>
 			{list.map((g) => (
-				<button key={`btn-${g}`} onClick={() => setFavoriteGenre(g)}>{g}</button>
+				<button key={`btn-${g}`} value={g} onClick={(e) => handleClick(e)}>{g}</button>
 			))}
 		</div>
 	);
