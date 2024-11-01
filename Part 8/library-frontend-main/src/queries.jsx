@@ -63,11 +63,11 @@ export const ALL_BOOKS = gql`
 
 export const BOOKS_BY_GENRE = gql`
   ${BOOK_DETAILS}
-  query {
+  query AllBooks($genre: String) {
     allBooks(genre: $genre) {
       ...BookDetails
     }
-  }
+}
   `
 
 export const ADD_BOOK = gql`

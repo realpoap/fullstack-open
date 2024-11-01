@@ -24,6 +24,7 @@ const App = () => {
   const allAuthorsQResults = useQuery(ALL_AUTHORS)
   const allBooksQResults = useQuery(ALL_BOOKS)
 
+
   const [createBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: (error) => {

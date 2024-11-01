@@ -52,7 +52,7 @@ const resolvers = {
 				return await Book.find({ genres: { $in: args.genre }, author: author })
 			}
 			if (args.genre) {
-				console.log("genre:", args.genre)
+				console.log("searching books by genre:", args.genre)
 				return await Book.find({ genres: { $in: args.genre } })
 			}
 		},
