@@ -1,3 +1,5 @@
+import { checkNumbers } from "./utils/checkNumber"
+
 interface Result { 
   periodLength: number,
   trainingDays: number,
@@ -8,7 +10,10 @@ interface Result {
   average: number
 }
 
-const calculateExercises = (target:number, exercise:number[]):Result => {
+const calculateExercises = (week:number[]):Result => {
+	const target = week[0]
+	const exercise = week.slice(1)
+	console.log("🚀 ~ exercise:", exercise)
 	console.log("🚀 ~ daily hours target:", target);
 	let sum = 0;
 	let success = exercise.includes(0) ? false : true;
@@ -35,7 +40,15 @@ const calculateExercises = (target:number, exercise:number[]):Result => {
 	
 }
 
-const week = [3, 0, 2, 4.5, 0, 3, 1];
-
-
-console.log(calculateExercises(2, week))
+try {
+	console.log('Please enter a target value and following days');
+	const week = checkNumbers(process.argv);
+	console.log(calculateExercises(week))
+} catch (error) {
+	let errMessage = 'Something bad happened :';
+	if (error instanceof Error) {
+		errMessage += error.message;
+	}
+	console.log(errMessage);
+	
+}
