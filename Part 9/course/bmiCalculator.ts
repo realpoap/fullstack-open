@@ -1,3 +1,5 @@
+import { checkNumbers } from "./utils/checkNumber";
+
 const calculateBMI = (height: number, mass:number) => {
 	const cm = height / 100
 	const result = mass / (cm*cm);
@@ -31,10 +33,18 @@ const calculateBMI = (height: number, mass:number) => {
 			console.log('There has been an error');
 			return
 	}
-	
 }
 
-calculateBMI(180,65);
 
-
+try {
+	const values = checkNumbers(process.argv);
+	calculateBMI(values[0],values[1]);
+} catch (err:unknown) {
+	let errMessage = 'Something bad happened :';
+	if (err instanceof Error) {
+		errMessage += err.message;
+	}
+	console.log(errMessage);
+	
+}
 
