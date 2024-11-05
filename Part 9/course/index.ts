@@ -1,8 +1,10 @@
 import express from 'express';
 import { calculateBMI } from './bmiCalculator';
 import { isNumber } from './utils/checkNumber';
+import { calculateExercises } from './exerciseCalculator';
 
 const app = express();
+app.use(express.json());
 
 app.get('/hello', (_req, res) => {
 	res.send('hello Full Stack');
@@ -34,6 +36,37 @@ app.get('/bmi', (req, res) => {
 		};
 		res.send(error);
 	}
+});
+
+app.post('/exercises', (req, res) => {
+	console.log(req.body);
+	
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	const { daily_exercises, target} = req.body;
+	if (!daily_exercises || !target) {
+		res.status(400).send({error: `missing argument`});
+		return;
+	}
+	if (!isNumber(target)) {
+		res.status(400).send({error: 'Invalid argument : target is not a number'});
+		return;
+	}
+	const exercises:number[] = [];
+	if(Array.isArray(daily_exercises)) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		daily_exercises.filter((e:any) => {
+			if(!isNumber(e)) {
+				res.status(400).send({error: `Invalid argument : ${e} is not a number`});
+			} else {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+				exercises.push(parseInt(e));
+			}
+		});
+	}
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+	const result = calculateExercises(parseInt(target), exercises);
+	console.log("🚀 ~ app.post ~ result:", result);
+	res.send(result);
 });
 
 const PORT=3003;

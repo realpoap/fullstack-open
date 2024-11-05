@@ -14,5 +14,5 @@ export const checkNumbers = (args:string[]):number[] => {
 	return parsedNumbers;
 };
 
-
-export const isNumber = (argument: string | number):boolean => !isNaN(Number(argument));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isNumber = (argument: any):boolean => !isNaN(Number(argument));

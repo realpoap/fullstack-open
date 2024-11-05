@@ -10,11 +10,9 @@ interface Result {
   average: number
 }
 
-const calculateExercises = (week:number[]):Result => {
-	const target = week[0];
-	const exercise = week.slice(1);
-	console.log("🚀 ~ exercise:", exercise);
-	console.log("🚀 ~ daily hours target:", target);
+export const calculateExercises = (target:number, exercise:number[]):Result => {
+	// console.log("🚀 ~ exercise:", exercise);
+	// console.log("🚀 ~ daily hours target:", target);
 	let sum = 0;
 	const success = exercise.includes(0) ? false : true;
 	exercise.map(e => {
@@ -32,23 +30,24 @@ const calculateExercises = (week:number[]):Result => {
 		periodLength : exercise.length,
 		trainingDays : exercise.filter(e => e>0).length,
 		success: success,
-  	rating: rating,
-  	ratingDescription: ratingDescription,
-  	target: target,
-  	average: avg
+		rating: rating,
+		ratingDescription: ratingDescription,
+		target: target,
+		average: avg
 	};
 	
 };
 
-try {
-	console.log('Please enter a target value and following days');
-	const week = checkNumbers(process.argv);
-	console.log(calculateExercises(week));
-} catch (error) {
-	let errMessage = 'Something bad happened :';
-	if (error instanceof Error) {
-		errMessage += error.message;
+if(require.main === module) {
+	try {
+		console.log('Please enter a target value and following days');
+		const week = checkNumbers(process.argv);
+		console.log(calculateExercises(week[0],week.slice(1)));
+	} catch (error) {
+		let errMessage = 'Something bad happened :';
+		if (error instanceof Error) {
+			errMessage += error.message;
+		}
+		console.log(errMessage);
 	}
-	console.log(errMessage);
-	
 }
