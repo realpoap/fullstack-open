@@ -13,3 +13,6 @@ export const checkNumbers = (args:string[]):number[] => {
 	})
 	return parsedNumbers
 }
+
+
+export const isNumber = (argument: any):boolean => !isNaN(Number(argument))
