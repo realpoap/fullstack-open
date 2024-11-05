@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+import express from 'express';
 import { calculateBMI } from './bmiCalculator';
 import { isNumber } from './utils/checkNumber';
 
@@ -8,10 +8,10 @@ app.get('/hello', (_req, res) => {
 	res.send('hello Full Stack');
 });
 
-app.get('/bmi', (req: Request, _res: Response) => {
-	const query = req.query
-	let height = 0
-	let weight = 0
+app.get('/bmi', (req, res) => {
+	const query = req.query;
+	let height = 0;
+	let weight = 0;
 
 	if(typeof(query.height) === 'string' && typeof(query.weight) === 'string') {
 		height = parseInt(query.height);
@@ -21,18 +21,18 @@ app.get('/bmi', (req: Request, _res: Response) => {
 	}
 
 	if(isNumber(height) && isNumber(weight)) {
-		const bmiResult = calculateBMI(height, weight)
+		const bmiResult = calculateBMI(height, weight);
 		const result = {
 			height: height,
 			weight: weight,
 			bmi: bmiResult,
-		}
-		console.log(result)
+		};
+		res.send(result);
 	} else {
 		const error = {
 			error: "malformatted parameters"
-		}
-		console.log(error); 
+		};
+		res.send(error);
 	}
 });
 

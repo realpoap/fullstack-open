@@ -1,4 +1,4 @@
-import { checkNumbers } from "./utils/checkNumber"
+import { checkNumbers } from "./utils/checkNumber";
 
 interface Result { 
   periodLength: number,
@@ -11,15 +11,15 @@ interface Result {
 }
 
 const calculateExercises = (week:number[]):Result => {
-	const target = week[0]
-	const exercise = week.slice(1)
-	console.log("🚀 ~ exercise:", exercise)
+	const target = week[0];
+	const exercise = week.slice(1);
+	console.log("🚀 ~ exercise:", exercise);
 	console.log("🚀 ~ daily hours target:", target);
 	let sum = 0;
-	let success = exercise.includes(0) ? false : true;
+	const success = exercise.includes(0) ? false : true;
 	exercise.map(e => {
 		sum+=e;
-	})
+	});
 	const avg = sum/exercise.length;
 	let rating = 0;
 	let ratingDescription = '';
@@ -36,14 +36,14 @@ const calculateExercises = (week:number[]):Result => {
   	ratingDescription: ratingDescription,
   	target: target,
   	average: avg
-	}
+	};
 	
-}
+};
 
 try {
 	console.log('Please enter a target value and following days');
 	const week = checkNumbers(process.argv);
-	console.log(calculateExercises(week))
+	console.log(calculateExercises(week));
 } catch (error) {
 	let errMessage = 'Something bad happened :';
 	if (error instanceof Error) {
