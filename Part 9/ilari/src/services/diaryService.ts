@@ -3,8 +3,6 @@ import {
   DiaryEntry, 
   NewDiaryEntry, 
   NonSensitiveDiaryEntry,
-  Visibility,
-  Weather, 
 } from '../types';
 
 
