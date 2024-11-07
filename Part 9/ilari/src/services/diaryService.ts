@@ -7,7 +7,12 @@ const getEntries = ():DiaryEntry[] => {
 };
 
 const getNonSensitiveDiariesEntries = ():NonSensitiveDiaryEntry[] => {
-  return diaries.map(({ id, date, weather, visibility }) => ({    id,    date,    weather,    visibility,  }));
+  return diaries.map(({ id, date, weather, visibility }) => ({
+    id,    
+    date,    
+    weather,    
+    visibility,  
+  }));
 };
 
 const addDiary = () => {
