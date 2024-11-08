@@ -1,8 +1,9 @@
 import express, {Request, Response, NextFunction} from 'express';
 import diaryService from '../services/diaryService';
 import { DiaryEntry, NewDiaryEntry } from '../types';
-import {NewEntrySchema} from '../utils';
+import NewEntrySchema from '../utils';
 import {z} from 'zod';
+
 
 const router  = express.Router();
 
@@ -25,6 +26,10 @@ const newDiaryParser = (req: Request, _res: Response, next: NextFunction) => {
 
 router.get('/', (_req, res:Response<DiaryEntry[]>) => {
 	res.send(diaryService.getNonSensitiveDiariesEntries());
+});
+
+router.get('/complete', (_req, res:Response<DiaryEntry[]>) => {
+  res.send(diaryService.getEntries());
 });
 
 router.post('/', newDiaryParser, (req:Request<unknown, unknown,NewDiaryEntry>, res:Response<DiaryEntry>) => {

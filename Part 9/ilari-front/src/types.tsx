@@ -1,33 +1,24 @@
-	interface CoursePartBase {
-  name: string;
-  exerciseCount: number;
+export enum Weather {
+  Sunny = 'sunny',
+  Rainy = 'rainy',
+  Cloudy = 'cloudy',
+  Stormy = 'stormy',
+  Windy = 'windy',
 }
 
-interface CoursePartDesc extends CoursePartBase {
-	description: string;
+export enum Visibility {
+  Great = 'great',
+  Good = 'good',
+  Ok = 'ok',
+  Poor = 'poor',
 }
 
-interface CoursePartBasic extends CoursePartDesc {
-  kind: "basic"
+export interface DiaryEntry {
+  id: number;
+  date: string;
+  weather: Weather;
+  visibility: Visibility;
+  comment?: string;
 }
 
-interface CoursePartGroup extends CoursePartBase {
-  groupProjectCount: number;
-  kind: "group"
-}
-
-interface CoursePartBackground extends CoursePartDesc {
-  backgroundMaterial: string;
-  kind: "background"
-}
-
-interface CoursePartRequirements extends CoursePartDesc {
-  requirements: string[];
-  kind: 'special'
-}
-
-//new interface with description attribute
-
-type CoursePart = CoursePartBasic | CoursePartGroup | CoursePartBackground | CoursePartRequirements;
-
-export default CoursePart
+export type NewDiaryEntry = Omit<DiaryEntry, 'id'> 

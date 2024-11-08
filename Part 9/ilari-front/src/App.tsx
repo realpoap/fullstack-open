@@ -1,61 +1,91 @@
-import Content from "./components/Content";
-import Header from "./components/Header";
-import Total from "./components/Total";
+import { useEffect, useState } from "react"
 
-import CoursePart from "./types";
+import { DiaryEntry, NewDiaryEntry } from "./types"
+import Diary from "./components/Diary"
+import { getAllDiaries, postDiary } from "./services/diariesService"
 
-const App = () => {
-  const courseName = "Half Stack application development";
-  const courseParts: CoursePart[] = [
-  {
-    name: "Fundamentals",
-    exerciseCount: 10,
-    description: "This is an awesome course part",
-    kind: "basic"
-  },
-  {
-    name: "Using props to pass data",
-    exerciseCount: 7,
-    groupProjectCount: 3,
-    kind: "group"
-  },
-  {
-    name: "Basics of type Narrowing",
-    exerciseCount: 7,
-    description: "How to go from unknown to string",
-    kind: "basic"
-  },
-  {
-    name: "Deeper type usage",
-    exerciseCount: 14,
-    description: "Confusing description",
-    backgroundMaterial: "https://type-level-typescript.com/template-literal-types",
-    kind: "background"
-  },
-  {
-    name: "TypeScript in frontend",
-    exerciseCount: 10,
-    description: "a hard part",
-    kind: "basic",
-  },
-  {
-    name: "Backend development",
-    exerciseCount: 21,
-    description: "Typing the backend",
-    requirements: ["nodejs", "jest"],
-    kind: "special"
-}
-];
+function App() {
+  const [diaries, setDiaries] = useState<DiaryEntry[]>([])
+  const [comment, setComment] = useState('')
+  const [visibility, setVisibility] = useState('')
+  const [weather, setWeather] = useState('')
+  const [date, setDate] = useState('')
 
-  const totalExercises = courseParts.reduce((sum, part) => sum + part.exerciseCount, 0);
+
+  useEffect(() => {
+    getAllDiaries().then(data => {
+      setDiaries(data)
+    })
+  },[])
+
+  const createDiary = (e:React.SyntheticEvent) => {
+    e.preventDefault()
+    const objectDiary = {
+      date: date,
+      visibility: visibility,
+      weather: weather,
+      comment: comment
+    }
+    console.log(objectDiary);
+    postDiary(objectDiary as NewDiaryEntry).then(data => {
+      setDiaries(diaries.concat(data as DiaryEntry));
+    })
+    
+  }
 
   return (
-    <div>
-      <Header title={courseName}/>
-      <Content courses={courseParts}/>
-      <Total total={totalExercises}/>
-    </div>
-  );
-};
+    <>
+      <h2>Add new entry :</h2>
+      <form onSubmit={createDiary}>
+        <div>
+        <label>Date
+          <input
+            type="date"
+            value={date}
+            onChange={(e)=>setDate(e.target.value)}
+          />
+        </label>
+        </div>
+        <div>
 
-export default App;
+        <label>Visibility
+          <input
+            type='string'
+            value={visibility}
+            onChange={(e)=>setVisibility(e.target.value)}
+          />
+        </label>
+        </div>
+        <div>
+
+        <label>Weather
+          <input
+            type="string"
+            value={weather}
+            onChange={(e)=>setWeather(e.target.value)}
+          />
+        </label>
+        </div>
+        <div>
+
+        <label>Comment
+          <input
+            type="string"
+            value={comment}
+            onChange={(e)=>setComment(e.target.value)}
+          />
+        </label>
+        </div>
+        <button type="submit">Send</button>
+      </form>
+      <h2>Diary Entries</h2>
+      {
+        diaries.map(d => 
+          <Diary key={d.id} diary={d}/>
+        )
+      }
+    </>
+  )
+}
+
+export default App
