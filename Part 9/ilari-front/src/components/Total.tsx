@@ -4,9 +4,9 @@ type Props = {
 
 const Total = (props: Props) => {
 	return (
-		<p>
+		<h2>
         Number of exercises {props.total}
-      </p>
+      </h2>
 	)
 }
 
