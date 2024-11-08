@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { DiaryEntry, NewDiaryEntry } from "./types"
 import Diary from "./components/Diary"
 import { getAllDiaries, postDiary } from "./services/diariesService"
+import Alert from "./components/Alert"
 
 function App() {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([])
@@ -10,6 +11,7 @@ function App() {
   const [visibility, setVisibility] = useState('')
   const [weather, setWeather] = useState('')
   const [date, setDate] = useState('')
+  const [message, setMessage] = useState('')
 
 
   useEffect(() => {
@@ -26,15 +28,28 @@ function App() {
       weather: weather,
       comment: comment
     }
-    console.log(objectDiary);
-    postDiary(objectDiary as NewDiaryEntry).then(data => {
-      setDiaries(diaries.concat(data as DiaryEntry));
-    })
-    
+    postDiary(objectDiary as NewDiaryEntry)
+      .then(data => {
+        setDiaries(diaries.concat(data));
+      })
+      .catch(error => notify(error.message))
   }
+
+  const notify = (error:string) => {
+    setMessage(error)
+    setTimeout(()=>{
+      setMessage('')
+    }, 3000)
+  }
+
+  // FIXME:
+  const alertStyle:React.CSSProperties = {
+    color: 'red',
+  };
 
   return (
     <>
+      <Alert style={alertStyle} message={message}/>
       <h2>Add new entry :</h2>
       <form onSubmit={createDiary}>
         <div>
