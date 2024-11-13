@@ -34,6 +34,7 @@ router.get('/complete', (_req, res:Response<DiaryEntry[]>) => {
 
 router.post('/', newDiaryParser, (req:Request<unknown, unknown,NewDiaryEntry>, res:Response<DiaryEntry>) => {
 		const addedEntry = diaryService.addDiary(req.body);
+    console.log('added Entry (backend):',addedEntry);
 		res.json(addedEntry);
 });
 

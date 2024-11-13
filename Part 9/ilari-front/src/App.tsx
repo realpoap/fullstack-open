@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react"
 
-import { DiaryEntry, NewDiaryEntry, Visibility, Weather } from "./types"
+import { DiaryEntry, Visibility, Weather } from "./types"
 import Diary from "./components/Diary"
 import { getAllDiaries, postDiary } from "./services/diariesService"
 import Alert from "./components/Alert"
 
 function App() {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([])
-  const [newDiary, setNewDiary] = useState<NewDiaryEntry>()
   const [comment, setComment] = useState('')
   const [visibility, setVisibility] = useState<Visibility>()
   const [weather, setWeather] = useState<Weather>()
@@ -23,37 +22,42 @@ function App() {
 
   const createDiary = (e:React.SyntheticEvent) => {
     e.preventDefault()
+    console.log(date, visibility, weather);
+    
     if (date && visibility && weather) {
-      setNewDiary({
+      const newDiaryObject = {
         date: date,
         visibility: visibility,
         weather: weather,
         comment: comment
-      })
+      }
+      console.log('newDiary:',newDiaryObject);
+      
+      if(newDiaryObject !== undefined){
+        postDiary(newDiaryObject)
+          .then((data:any) => {
+            console.log('received data:', data);
+            if (data !== undefined) {
+                setDiaries(diaries.concat(data));
+                notify('all good');
+              }
+            }
+          )
+          .catch(error => notify(error.message))
+      }
     }
-    if(newDiary !== undefined){
-      postDiary(newDiary)
-        .then(data => {
-            setDiaries(diaries.concat(data));
-            notify('all good')
-        })
-        .catch(error => notify(error.message))
-    }
-    setComment('')
-    setDate('')
-    // FIXME:
-    // setVisibility('')
-    // setWeather('')
+    
+    setComment('');
+    setDate('');
   }
 
   const notify = (error:string) => {
     setMessage(error)
     setTimeout(()=>{
-      setMessage('')
+      setMessage('');
     }, 3000)
   }
 
-  // FIXME:
   const alertStyle:React.CSSProperties = {
     color: 'red',
   };
