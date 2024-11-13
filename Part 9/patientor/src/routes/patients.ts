@@ -24,6 +24,13 @@ const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
 	}
 };
 
+router.get('/:id', (req:Request, res:Response<Patient>) => {
+	const id = req.params.id;
+	console.log(id);
+	
+	res.send(patientsService.getSinglePatient(id));
+});
+
 router.get('/', (_req, res:Response<NonSensitivePatient[]>) => {
 	res.send(patientsService.getNonSensitivePatients());
 });
@@ -32,6 +39,7 @@ router.post('/',newPatientParser, (req:Request<unknown, unknown, NewPatient>, re
 	const newEntry = patientsService.addPatient(req.body);
 	res.json(newEntry);
 });
+
 
 router.use(errorMiddleware);
 

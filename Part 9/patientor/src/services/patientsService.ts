@@ -7,6 +7,14 @@ const getPatients = ():Patient[] => {
 	return patients;
 };
 
+const getSinglePatient = (id:string):Patient => {
+	const patient = patients.find(p => p.id === id);
+	if (patient === undefined) {
+		throw new TypeError("No patient was found.");
+	}
+	return patient;
+};
+
 const getNonSensitivePatients = ():NonSensitivePatient[] => {
 	return patients.map(({id, name, dateOfBirth, gender, occupation}) => (
 		{
@@ -30,6 +38,7 @@ const addPatient = (entry:NewPatient):Patient => {
 
 export default {
 	getPatients,
+	getSinglePatient,
 	getNonSensitivePatients,
 	addPatient
 };
