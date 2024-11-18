@@ -11,5 +11,5 @@ export const NewPatientSchema = z.object(
 		ssn: z.string().refine((value)=>re.test(value??""),'Incorrect ssn'),
 		gender: z.nativeEnum(Gender),
 		occupation: z.string().optional(),
-	}
+		}
 );
