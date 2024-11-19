@@ -1,9 +1,9 @@
 import express, {Request, Response, NextFunction} from 'express';
 import { z } from 'zod';
-import { NewPatient, Patient, NonSensitivePatient} from '../types';
+import { NewPatient, Patient, NonSensitivePatient, NewEntry} from '../types';
 
 import patientsService from '../services/patientsService';
-import { NewPatientSchema } from '../utils';
+import { NewEntrySchema, NewPatientSchema } from '../utils';
 
 const router = express.Router();
 
@@ -24,6 +24,15 @@ const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
 	}
 };
 
+const newEntryParser = (req: Request, _res: Response, next: NextFunction) => {
+	try {
+		NewEntrySchema.parse(req.body);
+		next();
+	} catch (error: unknown) {
+		next(error);
+	}
+};
+
 router.get('/:id', (req:Request, res:Response<Patient>) => {
 	const id = req.params.id;
 	console.log(id);
@@ -38,6 +47,22 @@ router.get('/', (_req, res:Response<NonSensitivePatient[]>) => {
 router.post('/',newPatientParser, (req:Request<unknown, unknown, NewPatient>, res:Response<Patient>) => {
 	const newEntry = patientsService.addPatient(req.body);
 	res.json(newEntry);
+});
+
+router.post('/:id/entries', newEntryParser, (req:Request, res:Response<Patient>) => {
+	console.log(req.body);
+	const patient = patientsService.getSinglePatient(req.params.id);
+	if (!patient) {
+		throw new TypeError('No patient found');
+	}
+	console.log('patient found:');
+	
+	const newEntry = patientsService.addEntryToPatient(req.body as NewEntry);
+	patient.entries.push(newEntry);
+	console.log(patient);
+	
+	res.json(patient);
+	
 });
 
 

@@ -26,13 +26,13 @@ const SickLeave = z.object({
 	startDate: z.string(),
 	endDate: z.string(),
 });
-type SickLeave = z.infer<typeof SickLeave>;
+export type SickLeave = z.infer<typeof SickLeave>;
 
 const Discharge = z.object({
     date: z.string(),
     criteria: z.string(),
   });
-type Discharge = z.infer<typeof Discharge>;
+export type Discharge = z.infer<typeof Discharge>;
 
 interface HealthCheckEntry extends BaseEntry {
 	type: "HealthCheck";
@@ -55,14 +55,26 @@ export type Entry =
 | OccupationalHealthcareEntry
 | HealthCheckEntry;
 
+type UnionOmit<T,K extends string|number|symbol> = 
+	T extends unknown ? Omit<T,K> : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;
+
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;
 export type NewPatient = z.infer<typeof NewPatientSchema>;
 
-export interface Diagnosis {
-	code: string;
-	name: string;
-	latin? : string;
-}
+const Diagnosis = z.object({
+	code: z.string(),
+	name: z.string(),
+	latin : z.string().optional(),
+});
+export type Diagnosis = z.infer<typeof Diagnosis>;
+
+// export interface Diagnosis {
+// 	code: string;
+// 	name: string;
+// 	latin? : string;
+// }
 
 export interface Patient extends NewPatient{
 	id: string;

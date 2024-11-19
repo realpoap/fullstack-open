@@ -1,7 +1,7 @@
 import { v1 as uuid } from 'uuid';
 
 import patients from '../../data/patients';
-import { NewPatient, NonSensitivePatient, Patient } from '../types';
+import { Entry, NewEntry, NewPatient, NonSensitivePatient, Patient } from '../types';
 
 const getPatients = ():Patient[] => {
 	return patients;
@@ -37,9 +37,19 @@ const addPatient = (entry:NewPatient):Patient => {
 	return newPatientEntry;
 };
 
+const addEntryToPatient = (data:NewEntry):Entry => {
+	const newEntry = {
+		id: uuid(),
+		...data,
+	};
+	console.log();
+	return newEntry;
+};
+
 export default {
 	getPatients,
 	getSinglePatient,
 	getNonSensitivePatients,
-	addPatient
+	addPatient,
+	addEntryToPatient
 };
